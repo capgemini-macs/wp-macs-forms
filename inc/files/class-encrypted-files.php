@@ -13,12 +13,13 @@ class Encrypted_Files {
 	 * Cipher key for openssl encryption
 	 *
 	 */
-	private $cipher_key;
+	private $this->$cipher_key;
 
 
 	public function __construct() {
 		// Cipher key for openssl
-		$this->cipher_key = get_option( 'mf_cipher_key_render' );
+		$options = get_option( 'mf_settings' );
+		$this->cipher_key = $options['cipher_key'];
 	}
 
 	/**
@@ -94,7 +95,7 @@ class Encrypted_Files {
 
 		$file      = $file_data['file'];
 		$contents  = file_get_contents( $file['tmp_name'] ); //phpcs:ignore
-		$encrypted = openssl_encrypt( $contents, 'AES128', $cipher_key );
+		$encrypted = openssl_encrypt( $contents, 'AES128', $this->$cipher_key );
 
 		$file_post = MACS_Forms\Builder::get_instance()->make_file();
 		$file_id   = $file_post->insert(
