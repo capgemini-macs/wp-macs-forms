@@ -227,6 +227,6 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  // Initialize Proper Forms UI
+  // Initialize MACS Forms UI
   PfController.init()
 })

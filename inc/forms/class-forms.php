@@ -240,7 +240,7 @@ class Forms {
 	}
 
 	/**
-	 * Proper Forms Shortcode callback.
+	 * MACS Forms Shortcode callback.
 	 * Renders form by ID.
 	 *
 	 * @return string
@@ -488,7 +488,7 @@ class Forms {
 	}
 
 	/**
-	 * TODO: Save additional meta for posts that use Proper Forms shortcodes.
+	 * TODO: Save additional meta for posts that use MACS Forms shortcodes.
 	 */
 	public function add_form_usage_meta( $post_id, $post ) {
 
@@ -606,6 +606,6 @@ class Forms {
 			return $title;
 		}
 
-		return sprintf( 'Preview: Proper Form ID: %d', $mf_preview_id );
+		return sprintf( 'Preview: MACS Form ID: %d', $mf_preview_id );
 	}
 }

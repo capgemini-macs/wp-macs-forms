@@ -604,8 +604,8 @@ class Admin {
 	public function add_mf_admin_menu() {
 		add_submenu_page(
 			'options-general.php',
-			'Proper Forms',
-			'Proper Forms',
+			'MACS Forms',
+			'MACS Forms',
 			'manage_options',
 			'macs_forms',
 			[ $this, 'mf_options_page' ]
@@ -722,6 +722,15 @@ class Admin {
 			);
 		}
 	}
+	
+	public function mf_cipher_key_render() {
+		$options = get_option( 'mf_settings' );
+		$value   = ! empty( $options['cipher_key'] ) ? $options['cipher_key'] : '';
+		?>
+		<input type="text" name="mf_settings[cipher_key]" value="<?php echo esc_attr( $value ); ?>">
+		<?php
+	}
+
 
 	public function mf_captcha_secret_render() {
 		$options = get_option( 'mf_settings' );
@@ -752,7 +761,7 @@ class Admin {
 	public function mf_options_page() {
 		?>
 		<form action='options.php' method='post'>
-			<h2>Proper Forms</h2>
+			<h2>MACS Forms</h2>
 			<?php
 			settings_fields( 'mf_settings_page' );
 			do_settings_sections( 'mf_settings_page' );

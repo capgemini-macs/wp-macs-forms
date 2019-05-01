@@ -171,10 +171,10 @@ jQuery(document).ready(function ($) {
     // WP Ajax url with callback action query string
     self.ajaxURL = PF.ajaxURL + '?action=mf_fileupload'
 
-    // Parent Proper Form Form ID - to retrieve field settings from
+    // Parent MACS Form Form ID - to retrieve field settings from
     self.formId = ''
 
-    // Proper Forms field ID
+    // MACS Forms field ID
     self.fieldId = ''
 
     // WP Nonce
