@@ -13,7 +13,7 @@ class Encrypted_Files {
 	 * Cipher key for openssl encryption
 	 *
 	 */
-	private $this->$cipher_key;
+	private $cipher_key;
 
 
 	public function __construct() {
