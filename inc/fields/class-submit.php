@@ -1,6 +1,6 @@
 <?php
 
-namespace MACS_Forms\Fields;
+namespace Proper_Forms\Fields;
 
 class Submit extends Field {
 
@@ -30,26 +30,28 @@ class Submit extends Field {
 	 */
 	public function render_field() {
 		if ( is_multisite() ) {
-			$options = get_blog_option( 1, 'mf_settings' );
+			$options = get_blog_option( 1, 'pf_settings' );
 		} else {
-			$options = get_option( 'mf_settings' );
+			$options = get_option( 'pf_settings' );
 		}
+
+		$label = $this->label ?: esc_html__( 'Submit', 'proper-forms' );
 
 		if ( ! empty( $options['captcha_key'] ) ) :
 			?>
-			<div class="mf_field mf_field--recaptcha">
+			<div class="pf_field pf_field--recaptcha">
 				<div class="g-recaptcha" data-sitekey="<?php echo esc_attr( $options['captcha_key'] ); ?>"></div>
 			</div>
 			<?php
 		else :
 			if ( is_user_logged_in() ) {
-				echo esc_html__( 'Please set up Google reCAPTCHA site key and secret.', 'macs_forms' );
+				echo esc_html__( 'Please set up Google reCAPTCHA site key and secret.', 'proper-forms' );
 			}
 		endif;
 		?>
 
-			<div class="mf_field mf_field--submit">
-				<input type="submit" class="mf_field__input" id="<?php echo esc_attr( $this->id ); ?>" value="<?php echo esc_attr( $this->label ); ?>" />
+			<div class="pf_field pf_field--submit">
+				<input type="submit" class="pf_field__input" id="<?php echo esc_attr( $this->id ); ?>" value="<?php echo esc_attr( $label ); ?>" />
 			</div>
 		<?php
 	}
@@ -59,13 +61,13 @@ class Submit extends Field {
 	 */
 	public function render_field_settings() {
 		?>
-		<div class="mf-row">
+		<div class="pf-row">
 			<?php
 			$this->render_option(
 				[
 					'type'  => 'text',
 					'name'  => 'label',
-					'label' => __( 'Button label:', 'wp-macs-forms' ),
+					'label' => __( 'Button label:', 'proper-forms' ),
 					'value' => $this->get_value( 'label' ),
 				]
 			);

@@ -1,7 +1,6 @@
 (function() {
-	tinymce.PluginManager.add('macs_form', function( editor, url ) {
-		
-		var sh_tag = 'macs_form';
+	tinymce.PluginManager.add('proper_form', function( editor, url ) {
+		var sh_tag = 'proper_form';
 
 		var ajaxList = get_forms_list()
 
@@ -14,19 +13,24 @@
 
 			jQuery.post(ajaxurl, data, function( response ) {
 				var forms = response.data
-				
+
 				for (var key in forms) {
+
+				var input = key.replace('&#038;', '&').replace('&#8211;', '-');
+
 					pair = {
-						text: forms[key],
-						value: key
+						text: input,
+						value: forms[key]
 					}
-    				list.push(pair)
-    			}
+
+					list.push(pair);
+				}
 			});
-			return list	
+
+			return list
+
 		}
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
-		
 
 		/**
 		 * Return assets path
@@ -44,8 +48,8 @@
 		/**
 		 * Add TinyMCE popup for inserting shortcode attributes
 		 */
-		editor.addCommand('cg_button_popup', function(ui, vals) {
-			
+
+		editor.addCommand('cg_form_popup', function(ui, vals) {
 			//setup defaults
 			var form_id   = '';
 
@@ -77,15 +81,15 @@
 		/**
 		 * Add button for shortcode
 		 */
-		editor.addButton('macs_form', {
+		editor.addButton('proper_form', {
 			text: 'Form',
 			tooltip: 'Add Form',
 			onpostrender: function() {
 				this.$el.addClass('cg-shortcodes-btn')
 			},
 			onclick: function() {
-				editor.execCommand('cg_button_popup','',{
-					form_id : '',
+				editor.execCommand('cg_form_popup','',{
+					form_id : ''
 				});
 			}
 		});

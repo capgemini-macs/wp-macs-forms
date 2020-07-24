@@ -4,9 +4,10 @@
  * Sets up meta boxes and admin scripts.
  */
 
-namespace MACS_Forms;
-use MACS_Forms\Fields\Field_Types as Field_Types;
-use MACS_Forms\Forms\Form as Form;
+namespace Proper_Forms;
+use Proper_Forms\Fields\Field_Types as Field_Types;
+use Proper_Forms\Forms\Form as Form;
+use Proper_Forms\Submissions\Downloads as Downloads;
 
 class Admin {
 
@@ -39,29 +40,30 @@ class Admin {
 	protected function init() {
 
 		// Edit screens
-		add_action( 'add_meta_boxes_mf_form', [ $this, 'add_form_meta_boxes' ], 10, 1 );
-		add_action( 'add_meta_boxes_mf_sub', [ $this, 'add_sub_meta_boxes' ], 10, 1 );
-		add_action( 'add_meta_boxes_mf_file', [ $this, 'add_file_meta_boxes' ], 10, 1 );
+		add_action( 'add_meta_boxes_pf_form', [ $this, 'add_form_meta_boxes' ], 10, 1 );
+		add_action( 'add_meta_boxes_pf_sub', [ $this, 'add_sub_meta_boxes' ], 10, 1 );
+		add_action( 'add_meta_boxes_pf_file', [ $this, 'add_file_meta_boxes' ], 10, 1 );
 		add_action( 'do_meta_boxes', [ $this, 'metaboxes_cleanup' ], 100, 0 );
 
 		// admin scripts & styles
 		add_action( 'admin_enqueue_scripts', [ $this, 'admin_scripts' ], 20, 0 );
 
 		// settings page
-		add_action( 'admin_menu', [ $this, 'add_mf_admin_menu' ] );
-		add_action( 'admin_init', [ $this, 'mf_settings_init' ] );
+		add_action( 'admin_menu', [ $this, 'add_pf_admin_menu' ] );
+		add_action( 'admin_init', [ $this, 'pf_settings_init' ] );
 
 		// forms admin page columns
-		add_filter( 'manage_mf_form_posts_columns', [ $this, 'forms_posts_columns' ], 10, 1 );
-		add_action( 'manage_mf_form_posts_custom_column', [ $this, 'forms_shortcode_column_content' ], 10, 2 );
+		add_filter( 'manage_pf_form_posts_columns', [ $this, 'forms_posts_columns' ], 10, 1 );
+		add_action( 'manage_pf_form_posts_custom_column', [ $this, 'forms_admin_columns_content' ], 10, 2 );
 
 		// submissions admin page columns
-		add_filter( 'manage_mf_sub_posts_columns', [ $this, 'subs_posts_columns' ], 10, 1 );
-		add_action( 'manage_mf_sub_posts_custom_column', [ $this, 'subs_form_column_content' ], 10, 2 );
-		add_filter( 'manage_edit-mf_sub_sortable_columns', [ $this, 'subs_sortable_columns' ] );
+		add_filter( 'manage_pf_sub_posts_columns', [ $this, 'subs_posts_columns' ], 10, 1 );
+		add_action( 'manage_pf_sub_posts_custom_column', [ $this, 'subs_form_column_content' ], 10, 2 );
+		add_filter( 'manage_edit-pf_sub_sortable_columns', [ $this, 'subs_sortable_columns' ] );
 		add_action( 'pre_get_posts', [ $this, 'subs_by_form_order' ] );
 		add_filter( 'parse_query', [ $this, 'subs_parse_filter' ] );
 		add_action( 'restrict_manage_posts', [ $this, 'subs_forms_dropdown_filter' ] );
+		add_action( 'save_post_pf_form', [ $this, 'delete_forms_dropdown_cache' ] );
 
 		// tinyMCE shortcode button
 		add_filter( 'mce_external_plugins', [ $this, 'load_mce_plugin_script' ], 10, 1 );
@@ -70,10 +72,14 @@ class Admin {
 
 		// Unique title check
 		add_filter( 'wp_insert_post_data', [ $this, 'force_draft_on_non_unique' ], 10, 2 );
-		add_action( 'admin_notices', [ $this, 'mf_admin_notices' ] );
+		add_action( 'admin_notices', [ $this, 'pf_admin_notices' ] );
 
 		// Form preview button
 		add_action( 'post_submitbox_misc_actions', [ $this, 'add_form_preview_btn' ] );
+
+		// Downloads
+		add_action( 'admin_post_pf_download.csv', [ $this, 'pf_export_callback' ] );
+		add_action( 'admin_footer', [ $this, 'admin_posts_list_footer' ], 10, 1 );
 	}
 
 	/**
@@ -81,21 +87,21 @@ class Admin {
 	 */
 	public function admin_scripts() {
 
-		if ( ! in_array( get_current_screen()->id, [ 'mf_form', 'mf_sub', 'mf_file' ], true ) ) {
+		if ( ! in_array( get_current_screen()->id, [ 'pf_form', 'pf_sub', 'pf_file', 'edit-pf_form' ], true ) ) {
 			return;
 		}
 
-		wp_enqueue_style( 'wp-macs-forms', sprintf( '%1$s/wp-macs-forms/assets/css/wp-macs-forms-admin.css', plugins_url() ), [], VERSION );
+		wp_enqueue_style( 'cg-proper-forms', sprintf( '%1$s/cg-proper-forms/assets/css/proper-forms-admin.css', plugins_url() ), [], VERSION );
 
-		wp_enqueue_script( 'cg-mf-admin-js', sprintf( '%1$s/wp-macs-forms/assets/js/wp-macs-forms-admin.js', plugins_url() ), [ 'jquery', 'jquery-ui-draggable', 'jquery-ui-droppable' ], VERSION, true );
+		wp_enqueue_script( 'cg-pf-admin-js', sprintf( '%1$s/cg-proper-forms/assets/js/proper-forms-admin.js', plugins_url() ), [ 'jquery', 'jquery-ui-draggable', 'jquery-ui-droppable' ], VERSION, true );
 
 		wp_localize_script(
-			'cg-mf-admin-js',
+			'cg-pf-admin-js',
 			'PF',
 			[
 				'ajaxURL'           => admin_url( 'admin-ajax.php' ),
 				'postId'            => filter_input( INPUT_GET, 'post', FILTER_VALIDATE_INT ),
-				'string_delete_row' => esc_attr__( 'Delete this row', 'wp-macs-forms' ),
+				'string_delete_row' => esc_attr__( 'Delete this row', 'proper-forms' ),
 			]
 		);
 	}
@@ -107,9 +113,9 @@ class Admin {
 	 * @return array
 	 */
 	public function load_mce_plugin_script( $plugin_array ) {
-		$mce_plugin_url = sprintf( '%1$s/wp-macs-forms/assets/js/wp-macs-forms-tinymce.js', plugins_url() );
+		$mce_plugin_url = sprintf( '%1$s/cg-proper-forms/assets/js/proper-forms-tinymce.js?ver=1.2', plugins_url() );
 
-		$plugin_array['macs_form'] = $mce_plugin_url;
+		$plugin_array['proper_form'] = $mce_plugin_url;
 		return $plugin_array;
 	}
 
@@ -120,29 +126,41 @@ class Admin {
 	 * @return array
 	 */
 	public function add_mce_button( $buttons ) {
-		array_push( $buttons, 'macs_form' );
+		array_push( $buttons, 'proper_form' );
 		return $buttons;
 	}
 
 	public function tinymce_populate_forms() {
 
-		$query = new \WP_Query(
-			[
-				'post_type'      => 'mf_form',
-				'post_status'    => [ 'publish' ],
-				'posts_per_page' => 50,
-				'no_found_rows'  => true,
-			]
-		);
+		$forms_by_name = wp_cache_get( 'forms_by_name', 'proper_forms' );
 
-		$forms_by_id = [];
+		// run the query also if empty array is currently cached
+		if ( empty( $forms_by_name ) ) {
 
-		while ( $query->have_posts() ) :
-			$query->the_post();
-			$forms_by_id[ get_the_ID() ] = get_the_title();
-		endwhile;
-		wp_reset_query();
-		wp_send_json_success( $forms_by_id );
+			$query = new \WP_Query(
+				[
+					'post_type'      => 'pf_form',
+					'post_status'    => [ 'publish' ],
+					'posts_per_page' => 500, // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- cached
+					'orderby'        => 'title',
+					'order'          => 'ASC',
+					'no_found_rows'  => true,
+				]
+			);
+
+			$forms_by_name = [];
+
+			while ( $query->have_posts() ) :
+				$query->the_post();
+				$forms_by_name[ get_the_title() ] = get_the_ID();
+			endwhile;
+			wp_reset_postdata();
+		}
+
+		wp_cache_set( 'forms_by_name', $forms_by_name, 'proper_forms', DAY_IN_SECONDS );
+
+		wp_send_json_success( $forms_by_name );
+		exit;
 	}
 
 
@@ -154,19 +172,19 @@ class Admin {
 	public function add_form_meta_boxes( $post_type ) {
 
 		add_meta_box(
-			'mf_form_usage_box',
-			__( 'Form settings', 'wp-macs-forms' ),
+			'pf_form_usage_box',
+			__( 'Form settings', 'proper-forms' ),
 			[ $this, 'render_meta_box_infobox' ],
-			[ 'mf_form' ],
+			[ 'pf_form' ],
 			'normal',
 			'high'
 		);
 
 		add_meta_box(
-			'mf_form_builder',
-			__( 'Form Builder', 'wp-macs-forms' ),
+			'pf_form_builder',
+			__( 'Form Builder', 'proper-forms' ),
 			[ $this, 'render_meta_box_builder' ],
-			[ 'mf_form' ],
+			[ 'pf_form' ],
 			'normal',
 			'high'
 		);
@@ -180,23 +198,24 @@ class Admin {
 	public function render_meta_box_builder( $post ) {
 
 		$form = Builder::get_instance()->make_form( $post->ID );
+
 		?>
-		<div class="mf_builder mf-box">
-			<div class="mf-row">
-				<div class="mf_builder__canvas mf-cell-8">
-					<ul class="mf_list mf_list--canvas sortable">
+		<div class="pf_builder pf-box">
+			<div class="pf-row">
+				<div class="pf_builder__canvas pf-cell-8">
+					<ul class="pf_list pf_list--canvas sortable">
 						<?php $form->render_admin_form_fields(); ?>
 					</ul>
 				</div>
-				<div class="mf_builder__picker mf-cell-4">
-					<h3 class="mf-subtitle"><?php esc_html_e( 'Available Fields', 'wp-macs-forms' ); ?></h3>
+				<div class="pf_builder__picker pf-cell-4">
+					<h3 class="pf-subtitle"><?php esc_html_e( 'Available Fields', 'proper-forms' ); ?></h3>
 
-					<ul class="mf_list mf_list--picker">
+					<ul class="pf_list pf_list--picker">
 						<?php $this->render_available_fields_picker(); ?>
 					</ul>
 				</div>
 
-				<?php wp_nonce_field( 'mf_save_data', '_mf_nonce' ); ?>
+				<?php wp_nonce_field( 'pf_save_data', '_pf_nonce' ); ?>
 			</div>
 		</div>
 		<?php
@@ -215,83 +234,136 @@ class Admin {
 		}
 	}
 
+	private function is_used_as_default( $form_id ) {
+		$pf_options = get_option( 'pf_settings' );
+
+		if ( ! is_array( $pf_options ) ) {
+			return false;
+		}
+
+		unset( $pf_options['captcha_key'] );
+		unset( $pf_options['captcha_secret'] );
+		unset( $pf_options['nf_shortcode'] );
+
+		if ( in_array( $form_id, array_values( $pf_options ) ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * TODO: Form infobox meta box output
 	 *
 	 * @param \WP_Post $post post object
 	 */
 	public function render_meta_box_infobox( $post ) {
-		$has_pardot        = get_post_meta( $post->ID, 'mf_form_has_pardot', true ) ?: '';
-		$pardot_handler    = get_post_meta( $post->ID, 'mf_form_pardot_handler', true ) ?: '';
-		$has_notification  = get_post_meta( $post->ID, 'mf_form_admin_notify', true ) ?: '';
-		$notification_mail = get_post_meta( $post->ID, 'mf_form_admin_custom_mail', true ) ?: get_option( 'admin_email' );
-		$custom_ty_msg     = get_post_meta( $post->ID, 'mf_form_ty_msg', true ) ?: '';
-		$shortcode         = sprintf( '[macs_form id="%d"]', absint( $post->ID ) );
+		$has_pardot        = get_post_meta( $post->ID, 'pf_form_has_pardot', true ) ?: '';
+		$pardot_handler    = get_post_meta( $post->ID, 'pf_form_pardot_handler', true ) ?: '';
+		$has_notification  = get_post_meta( $post->ID, 'pf_form_admin_notify', true ) ?: '';
+		$notification_mail = get_post_meta( $post->ID, 'pf_form_admin_custom_mail', true ) ?: get_option( 'admin_email' );
+		$custom_ty_msg     = get_post_meta( $post->ID, 'pf_form_ty_msg', true ) ?: '';
+		$used_in           = get_post_meta( $post->ID, 'used_in', true ) ?: [];
+		$shortcode         = sprintf( '[proper_form id="%d"]', absint( $post->ID ) );
+		$redirect_url      = get_post_meta( $post->ID, 'pf_form_redirect_url', true ) ?: '';
 		?>
-		<div class="mf_infobox mf-box">
+		<div class="pf_infobox pf-box">
 
-			<div class="mf-row">
-				<div class="mf-cell-12">
-					<h3 <h3 class="mf-subtitle"><?php esc_html_e( 'Form shortcode', 'wp-macs-forms' ); ?></h3>
+			<div class="pf-row">
+				<div class="pf-cell-12">
+					<h3 class="pf-subtitle"><?php esc_html_e( 'Form shortcode', 'proper-forms' ); ?></h3>
 				</div>
-				<div class="mf-cell-4 mf_setting">
+				<div class="pf-cell-4 pf_setting">
 					<input type="text" value="<?php echo esc_attr( $shortcode ); ?>" readonly />
 				</div>
 			</div>
 
-			<div class="mf-row">
-				<div class="mf-cell-12">
-					<h3 <h3 class="mf-subtitle"><?php esc_html_e( 'Email notification', 'wp-macs-forms' ); ?></h3>
+			<div class="pf-row">
+				<div class="pf-cell-12">
+					<h3 class="pf-subtitle"><?php esc_html_e( 'Email notification', 'proper-forms' ); ?></h3>
 				</div>
-				<div class="mf-cell-12 mf_setting">
-					<input id="mf_form_admin_notify" class="" name="mf_form_admin_notify" type="checkbox" value="1" <?php checked( true, $has_notification ); ?>>
-					<label for="mf_form_admin_notify"><?php echo esc_html( 'Send admin notification after submission is sent', 'wp-macs-forms' ); ?></label>
+				<div class="pf-cell-12 pf_setting">
+					<input id="pf_form_admin_notify" class="" name="pf_form_admin_notify" type="checkbox" value="1" <?php checked( true, $has_notification ); ?>>
+					<label for="pf_form_admin_notify"><?php echo esc_html( 'Send admin notification after submission is sent', 'proper-forms' ); ?></label>
 				</div>
 
-				<div class="mf-cell-8 mf_setting">
-					<label for="mf_form_admin_custom_mail"><?php echo esc_html( 'Custom admin e-mail for notifications', 'wp-macs-forms' ); ?></label><br />
-					<input id="mf_form_admin_custom_mail" class="" name="mf_form_admin_custom_mail" type="email" value="<?php echo esc_attr( $notification_mail ); ?>" />
+				<div class="pf-cell-8 pf_setting">
+					<label for="pf_form_admin_custom_mail"><?php echo esc_html( 'Custom admin e-mail for notifications', 'proper-forms' ); ?></label><br />
+					<textarea id="pf_form_admin_custom_mail" class="" name="pf_form_admin_custom_mail"><?php echo esc_html( $notification_mail ); ?></textarea>
 				</div>
 			</div>
 
-			<div class="mf-row">
-				<div class="mf-cell-12">
-					<h3 <h3 class="mf-subtitle"><?php esc_html_e( 'Pardot integration', 'wp-macs-forms' ); ?></h3>
+			<div class="pf-row">
+				<div class="pf-cell-12">
+					<h3 class="pf-subtitle"><?php esc_html_e( 'Pardot integration', 'proper-forms' ); ?></h3>
 				</div>
-				<div class="mf-cell-12 mf_setting">
-					<input id="mf_form_has_pardot" class="" name="mf_form_has_pardot" type="checkbox" value="1" <?php checked( true, $has_pardot ); ?>>
-					<label for="mf_form_has_pardot"><?php esc_html_e( 'Connect this form to Pardot handler', 'wp-macs-forms' ); ?></label>
+				<div class="pf-cell-12 pf_setting">
+					<input id="pf_form_has_pardot" class="" name="pf_form_has_pardot" type="checkbox" value="1" <?php checked( true, $has_pardot ); ?>>
+					<label for="pf_form_has_pardot"><?php esc_html_e( 'Connect this form to Pardot handler', 'proper-forms' ); ?></label>
 				</div>
 
-				<div class="mf-cell-8 mf_setting">
-					<label for="mf_form_pardot_handler"><?php esc_html_e( 'Pardot handler URL', 'wp-macs-forms' ); ?></label><br />
-					<input id="mf_form_pardot_handler" class="mf_pardot_rel" name="mf_form_pardot_handler" type="text" value="<?php echo esc_attr( $pardot_handler ); ?>" />
+				<div class="pf-cell-8 pf_setting">
+					<label for="pf_form_pardot_handler"><?php esc_html_e( 'Pardot handler URL', 'proper-forms' ); ?></label><br />
+					<input id="pf_form_pardot_handler" class="pf_pardot_rel" name="pf_form_pardot_handler" type="text" value="<?php echo esc_attr( $pardot_handler ); ?>" />
 				</div>
 			</div>
 
-			<div class="mf-row">
-				<div class="mf-cell-12">
-					<h3 <h3 class="mf-subtitle"><?php esc_html_e( 'Trigger WP Action', 'wp-macs-forms' ); ?></h3>
+			<div class="pf-row trigger-wp-action">
+				<div class="pf-cell-12">
+					<h3 class="pf-subtitle"><?php esc_html_e( 'Trigger WP Action', 'proper-forms' ); ?></h3>
 				</div>
-				<div class="mf-cell-12 mf_setting">
-					<input id="mf_form_trigger_action" class="" name="mf_form_trigger_action" type="checkbox" value="1">
-					<label for="mf_form_trigger_action"><?php echo esc_html( 'Trigger custom WP action', 'wp-macs-forms' ); ?></label>
+				<div class="pf-cell-12 pf_setting">
+					<input id="pf_form_trigger_action" class="" name="pf_form_trigger_action" type="checkbox" value="1">
+					<label for="pf_form_trigger_action"><?php echo esc_html( 'Trigger custom WP action', 'proper-forms' ); ?></label>
 				</div>
 
-				<div class="mf-cell-8 mf_setting">
-					<label for="mf_form_action_handler"><?php echo esc_html( 'WP action handler', 'wp-macs-forms' ); ?></label><br />
-					<input id="mf_form_action_handler" class="" name="mf_form_action_handler" type="text" value="<?php echo esc_attr( '' ); ?>" />
+				<div class="pf-cell-8 pf_setting">
+					<label for="pf_form_action_handler"><?php echo esc_html( 'WP action handler', 'proper-forms' ); ?></label><br />
+					<input id="pf_form_action_handler" class="" name="pf_form_action_handler" type="text" value="<?php echo esc_attr( '' ); ?>" />
 				</div>
 			</div>
 
-			<div class="mf-row">
-				<div class="mf-cell-12">
-					<h3 <h3 class="mf-subtitle"><?php esc_html_e( 'Thank you message', 'wp-macs-forms' ); ?></h3>
+			<div class="pf-row">
+				<div class="pf-cell-12">
+					<h3 class="pf-subtitle"><?php esc_html_e( 'Thank you message', 'proper-forms' ); ?></h3>
 				</div>
 
-				<div class="mf-cell-8 mf_setting">
-					<label for="mf_form_ty_msg"><?php echo esc_html( 'Custom "Thank You" message', 'wp-macs-forms' ); ?></label><br />
-					<textarea id="mf_form_ty_msg" style="width:66%;" rows="3" name="mf_form_ty_msg" type="text"><?php echo esc_html( $custom_ty_msg ); ?></textarea>
+				<div class="pf-cell-8 pf_setting">
+					<label for="pf_form_ty_msg"><?php echo esc_html( 'Custom "Thank You" message', 'proper-forms' ); ?></label>
+					<?php
+						$editor_id      = 'pf_form_ty_msg';
+						$editor_options = array( 'media_buttons' => false );
+
+						wp_editor( $custom_ty_msg, $editor_id, $editor_options );
+					?>
+				</div>
+			</div>
+
+			<div class="pf-row">
+				<div class="pf-cell-12">
+					<h3 class="pf-subtitle"><?php esc_html_e( 'Redirect url', 'proper-forms' ); ?></h3>
+				</div>
+
+				<div class="pf-cell-8 pf_setting">
+					<label for="pf_form_redirect_url"><?php echo esc_html( 'Custom redirect url', 'proper-forms' ); ?></label><br />
+					<input id="pf_form_redirect_url" name="pf_form_redirect_url" type="url" value="<?php echo esc_url( $redirect_url ); ?>" />
+				</div>
+			</div>
+
+			<div class="pf-row">
+				<div class="pf-cell-12">
+					<h3 class="pf-subtitle"><?php esc_html_e( 'Form Usage', 'proper-forms' ); ?></h3>
+				</div>
+
+				<div class="pf-cell-8 pf_setting">
+					<?php if ( $this->is_used_as_default( $post->ID ) ) : ?>
+						<span><span class="dashicons dashicons-admin-post"></span> Used as a default form</span></br>
+					<?php
+					endif;
+					foreach ( (array) $used_in as $post_id ) :
+						?>
+						<span class="dashicons dashicons-welcome-write-blog"></span> <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php echo esc_html( get_the_title( $post_id ) ); ?></a><br />
+					<?php endforeach; ?>
 				</div>
 			</div>
 		</div>
@@ -306,10 +378,10 @@ class Admin {
 	public function add_file_meta_boxes( $post_type ) {
 
 		add_meta_box(
-			'mf_file_data',
-			__( 'File data', 'wp-macs-forms' ),
+			'pf_file_data',
+			__( 'File data', 'proper-forms' ),
 			[ $this, 'render_meta_box_file_data' ],
-			[ 'mf_file' ],
+			[ 'pf_file' ],
 			'normal',
 			'high'
 		);
@@ -328,44 +400,44 @@ class Admin {
 			return;
 		}
 		?>
-		<div class="mf_file mf-box">
-			<div class="mf-row">
-				<div class="mf-cell-12">
+		<div class="pf_file pf-box">
+			<div class="pf-row">
+				<div class="pf-cell-12">
 					<p>
 					<?php
-					echo esc_html__( 'Submitted on: ', 'wp-macs-forms' );
+					echo esc_html__( 'Submitted on: ', 'proper-forms' );
 					echo esc_html( $file_post->post_date );
 					?>
 					</p>
 
 					<?php if ( ! empty( $file->sub_id ) ) : ?>
-					<p><?php esc_html_e( 'Attached to submission:', 'wp-macs-forms' ); ?> <a href="<?php echo esc_url( get_permalink( $file->sub_id ) ); ?>"><?php echo esc_html( get_the_title( $file->sub_id ) ); ?></a></p>
+					<p><?php esc_html_e( 'Attached to submission:', 'proper-forms' ); ?> <a href="<?php echo esc_url( get_permalink( $file->sub_id ) ); ?>"><?php echo esc_html( get_the_title( $file->sub_id ) ); ?></a></p>
 					<?php endif; ?>
 				</div>
 			</div>
-			<div class="mf-row">
-				<div class="mf-cell-12">
-					<div class="mf-row">
-						<div class="mf-cell-4">
-							<strong><?php echo esc_html( 'File title', 'wp-macs-forms' ); ?></strong>
+			<div class="pf-row">
+				<div class="pf-cell-12">
+					<div class="pf-row">
+						<div class="pf-cell-4">
+							<strong><?php echo esc_html( 'File title', 'proper-forms' ); ?></strong>
 						</div>
-						<div class="mf-cell-8">
+						<div class="pf-cell-8">
 							<span><?php echo esc_html( $file->title ); ?></span>
 						</div>
 					</div>
-					<div class="mf-row">
-						<div class="mf-cell-4">
-							<strong><?php echo esc_html( 'File type', 'wp-macs-forms' ); ?></strong>
+					<div class="pf-row">
+						<div class="pf-cell-4">
+							<strong><?php echo esc_html( 'File type', 'proper-forms' ); ?></strong>
 						</div>
-						<div class="mf-cell-8">
+						<div class="pf-cell-8">
 							<span><?php echo esc_html( $file->filetype ); ?></span>
 						</div>
 					</div>
-					<div class="mf-row">
-						<div class="mf-cell-4">
-							<strong><?php echo esc_html( 'File URL', 'wp-macs-forms' ); ?></strong>
+					<div class="pf-row">
+						<div class="pf-cell-4">
+							<strong><?php echo esc_html( 'File URL', 'proper-forms' ); ?></strong>
 						</div>
-						<div class="mf-cell-8">
+						<div class="pf-cell-8">
 							<span><a href="<?php echo esc_url( $file->url ); ?>"><?php echo esc_url( $file->url ); ?></a></span>
 						</div>
 					</div>
@@ -383,10 +455,10 @@ class Admin {
 	public function add_sub_meta_boxes( $post_type ) {
 
 		add_meta_box(
-			'mf_sub_data',
-			__( 'Submission data', 'wp-macs-forms' ),
+			'pf_sub_data',
+			__( 'Submission data', 'proper-forms' ),
 			[ $this, 'render_meta_box_sub_data' ],
-			[ 'mf_sub' ],
+			[ 'pf_sub' ],
 			'normal',
 			'high'
 		);
@@ -405,12 +477,12 @@ class Admin {
 			return;
 		}
 		?>
-		<div class="mf_submission mf-box">
-			<div class="mf-row">
-				<div class="mf-cell-12">
+		<div class="pf_submission pf-box">
+			<div class="pf-row">
+				<div class="pf-cell-12">
 					<p>
 					<?php
-					echo esc_html__( 'Submitted on: ', 'macs_forms' );
+					echo esc_html__( 'Submitted on: ', 'proper-forms' );
 					echo esc_html( $submission_post->post_date );
 					?>
 					</p>
@@ -418,19 +490,19 @@ class Admin {
 					<p>Form: <a href="<?php echo esc_url( get_edit_post_link( $sub->form_id ) ); ?>"><?php echo esc_html( get_the_title( $sub->form_id ) ); ?></a></p>
 				</div>
 			</div>
-			<div class="mf-row">
-				<div class="mf-cell-12">
+			<div class="pf-row">
+				<div class="pf-cell-12">
 					<?php
 					foreach ( (array) $sub->fields as $field ) :
 						if ( 'submit' === $field->type ) {
 							continue;
 						}
 						?>
-						<div class="mf-row">
-							<div class="mf-cell-4">
+						<div class="pf-row">
+							<div class="pf-cell-4">
 								<strong><?php echo esc_html( $field->label ); ?>:</strong>
 							</div>
-							<div class="mf-cell-4">
+							<div class="pf-cell-4">
 								<?php
 								if ( is_array( $field->saved_value ) ) :
 									$vals = array_map(
@@ -471,8 +543,9 @@ class Admin {
 		unset( $columns['taxonomy-cg-campaign-taxonomy'] );
 		unset( $columns['date'] );
 
-		$columns['shortcode'] = __( 'Shortcode', 'macs_forms' );
-		$columns['date']      = __( 'Date', 'macs_forms' );
+		$columns['shortcode'] = __( 'Shortcode', 'proper-forms' );
+		$columns['usage'] = __( 'Used in', 'proper-forms' );
+		$columns['date'] = __( 'Date', 'proper-forms' );
 
 		return $columns;
 	}
@@ -482,11 +555,16 @@ class Admin {
 	 * @param $column
 	 * @param $post_id
 	 */
-	public function forms_shortcode_column_content( $column, $post_id ) {
+	public function forms_admin_columns_content( $column, $post_id ) {
 		if ( 'shortcode' === $column ) {
-			$shortcode = sprintf( '[macs_form id="%d"]', absint( $post_id ) );
-			echo sprintf( '<pre>%s</pre>', esc_html( $shortcode ) );
+			$shortcode = sprintf( '[proper_form id="%d"]', absint( $post_id ) );
+			echo sprintf( '<input class="" type="text" value="%s" cols="200" readonly />', esc_attr( $shortcode ) );
+		}
 
+		if ( 'usage' === $column ) {
+			$ids = get_post_meta( $post_id, 'used_in', true );
+			$ids = is_array( $ids ) ? implode( ',', $ids ) : $ids;
+			echo $ids ?: esc_html__( 'Unused', 'proper-forms' );
 		}
 	}
 
@@ -494,7 +572,7 @@ class Admin {
 	 * Add form column to submissions
 	 */
 	public function subs_posts_columns( $columns ) {
-		$columns['form'] = __( 'Form', 'macs_forms' );
+		$columns['form'] = __( 'Form', 'proper-forms' );
 
 		unset( $columns['status'] );
 		unset( $columns['tags'] );
@@ -524,7 +602,7 @@ class Admin {
 	public function subs_by_form_order( $query ) {
 		global $pagenow;
 		$post_type         = filter_input( INPUT_GET, 'post_type', FILTER_SANITIZE_STRING );
-		$is_subs_edit_page = 'edit.php' === $pagenow && 'mf_sub' === $post_type;
+		$is_subs_edit_page = 'edit.php' === $pagenow && 'pf_sub' === $post_type;
 
 		if ( ! is_admin() || ! $query->is_main_query() || ! $is_subs_edit_page ) {
 			return;
@@ -541,7 +619,7 @@ class Admin {
 		global $pagenow;
 		$post_type         = filter_input( INPUT_GET, 'post_type', FILTER_SANITIZE_STRING );
 		$form_filter_val   = filter_input( INPUT_GET, 'filter-form', FILTER_VALIDATE_INT );
-		$is_subs_edit_page = 'edit.php' === $pagenow && 'mf_sub' === $post_type;
+		$is_subs_edit_page = 'edit.php' === $pagenow && 'pf_sub' === $post_type;
 
 		if ( ! is_admin() || ! $is_subs_edit_page || empty( $form_filter_val ) ) {
 			return;
@@ -552,31 +630,39 @@ class Admin {
 	}
 
 	public function subs_forms_dropdown_filter() {
-		$filter_query = new \WP_Query(
-			[
-				'post_type'           => 'mf_form',
-				'posts_per_page'      => 100,
+
+		$options = wp_cache_get( 'pf_forms_dropdown', 'proper-forms' );
+
+		if ( false === $options ) {
+
+			$filter_query = new \WP_Query( [
+				'post_type'           => 'pf_form',
+				'posts_per_page'      => 500,
 				'no_found_rows'       => true,
 				'ignore_sticky_posts' => true,
 				'post_status'         => 'publish',
 				'sub_query'           => false,
-			]
-		);
+				'orderby'             => 'title',
+				'order'               => 'ASC',
+			] );
 
-		$options  = [];
-		$selected = filter_input( INPUT_GET, 'filter-form', FILTER_VALIDATE_INT ) ?? '';
+			$options  = [];
+			$selected = filter_input( INPUT_GET, 'filter-form', FILTER_VALIDATE_INT ) ?? '';
 
-		while ( $filter_query->have_posts() ) :
-			$filter_query->the_post();
+			while ( $filter_query->have_posts() ) :
+				$filter_query->the_post();
 
-			$options[] = sprintf( '<option value="%1$d" %2$s>%3$s</option>', get_the_ID(), selected( get_the_ID(), $selected, false ), get_the_title() );
-		endwhile;
+				$options[] = sprintf( '<option value="%1$d" %2$s>%3$s</option>', get_the_ID(), selected( get_the_ID(), $selected, false ), get_the_title() );
+			endwhile;
 
-		wp_reset_query();
+			wp_reset_postdata();
+
+			wp_cache_set( 'pf_forms_dropdown', $options, 'proper-forms', 3 * DAY_IN_SECONDS );
+		}
 
 		printf(
 			'<select name="filter-form"><option value="">%1$s</option>%2$s</select>',
-			esc_html__( 'Any form', 'macs_forms' ),
+			esc_html__( 'Any form', 'proper-forms' ),
 			wp_kses(
 				implode( "\n", $options ),
 				[
@@ -589,11 +675,16 @@ class Admin {
 		);
 	}
 
+	public function delete_forms_dropdown_cache() {
+		wp_cache_delete( 'pf_forms_dropdown', 'proper-forms' );
+		wp_cache_delete( 'forms_by_id', 'proper-forms' );
+	}
+
 	/**
 	 * Remove useless metaboxes
 	 */
 	public function metaboxes_cleanup() {
-		$screens = [ 'mf_form', 'mf_file', 'mf_sub' ];
+		$screens = [ 'pf_form', 'pf_file', 'pf_sub' ];
 
 		remove_meta_box( 'postexcerpt', $screens, 'normal' );
 		remove_meta_box( 'trackbacksdiv', $screens, 'normal' );
@@ -601,52 +692,45 @@ class Admin {
 		remove_meta_box( 'commentsdiv', $screens, 'normal' );
 	}
 
-	public function add_mf_admin_menu() {
+	public function add_pf_admin_menu() {
 		add_submenu_page(
 			'options-general.php',
-			'MACS Forms',
-			'MACS Forms',
+			'Proper Forms',
+			'Proper Forms',
 			'manage_options',
-			'macs_forms',
-			[ $this, 'mf_options_page' ]
+			'proper_forms',
+			[ $this, 'pf_options_page' ]
 		);
 	}
 
-	public function mf_settings_init() {
+	public function pf_settings_init() {
 
-		register_setting( 'mf_settings_page', 'mf_settings' );
+		register_setting( 'pf_settings_page', 'pf_settings' );
 
-		$default_forms = apply_filters( 'mf_default_forms', [] );
+		$default_forms = apply_filters( 'pf_default_forms', [] );
 
 		// SECTIONS
 
 		add_settings_section(
-			'macs_forms_settings_general',
-			__( 'General Settings', 'macs_forms' ),
+			'proper_forms_settings_captcha',
+			__( 'CAPTCHA settings', 'proper-forms' ),
 			null,
-			'mf_settings_page'
+			'pf_settings_page'
 		);
 
 		add_settings_section(
-			'macs_forms_settings_captcha',
-			__( 'CAPTCHA settings', 'macs_forms' ),
+			'proper_forms_settings_nf',
+			__( 'Ninja Forms compatibility', 'proper-forms' ),
 			null,
-			'mf_settings_page'
-		);
-
-		add_settings_section(
-			'macs_forms_settings_nf',
-			__( 'Ninja Forms compatibility', 'macs_forms' ),
-			null,
-			'mf_settings_page'
+			'pf_settings_page'
 		);
 
 		if ( ! empty( $default_forms ) ) {
 			add_settings_section(
-				'macs_forms_settings_default',
-				__( 'Default Forms', 'macs_forms' ),
+				'proper_forms_settings_default',
+				__( 'Default Forms', 'proper-forms' ),
 				null,
-				'mf_settings_page'
+				'pf_settings_page'
 			);
 		}
 
@@ -654,49 +738,40 @@ class Admin {
 
 		// 1, Captcha
 		add_settings_field(
-			'cipher_key',
-			__( 'CIPHER key', 'macs_forms' ),
-			[ $this, 'mf_cipher_key_render' ],
-			'mf_settings_page',
-			'macs_forms_settings_general'
-		);
-
-		// 2. Captcha
-		add_settings_field(
 			'captcha_key',
-			__( 'Google reCAPTCHA site key', 'macs_forms' ),
-			[ $this, 'mf_captcha_key_render' ],
-			'mf_settings_page',
-			'macs_forms_settings_captcha'
+			__( 'Google reCAPTCHA site key', 'proper-forms' ),
+			[ $this, 'pf_captcha_key_render' ],
+			'pf_settings_page',
+			'proper_forms_settings_captcha'
 		);
 
 		add_settings_field(
 			'captcha_secret',
-			__( 'Google reCAPTCHA secret', 'macs_forms' ),
-			[ $this, 'mf_captcha_secret_render' ],
-			'mf_settings_page',
-			'macs_forms_settings_captcha'
+			__( 'Google reCAPTCHA secret', 'proper-forms' ),
+			[ $this, 'pf_captcha_secret_render' ],
+			'pf_settings_page',
+			'proper_forms_settings_captcha'
 		);
 
-		// 3. Ninja Forms related
+		// 2, Ninja Forms related
 		add_settings_field(
-			'mf_nf_shortcode',
-			__( 'Shortcodes', 'macs_forms' ),
-			[ $this, 'mf_nf_shortcode_render' ],
-			'mf_settings_page',
-			'macs_forms_settings_nf'
+			'pf_nf_shortcode',
+			__( 'Shortcodes', 'proper-forms' ),
+			[ $this, 'pf_nf_shortcode_render' ],
+			'pf_settings_page',
+			'proper_forms_settings_nf'
 		);
 
-		// 4. Default Forms
+		// 3. Default Forms
 
 		foreach ( $default_forms as $slug => $name ) {
 
-			$mf_options = get_option( 'mf_settings' );
-			$value      = ! empty( $mf_options[ "mf_default_{$slug}" ] ) ? $mf_options[ "mf_default_{$slug}" ] : '';
+			$pf_options = get_option( 'pf_settings' );
+			$value      = ! empty( $pf_options[ "pf_default_{$slug}" ] ) ? $pf_options[ "pf_default_{$slug}" ] : '';
 			$all_forms  = $this->get_all_published_forms();
 
 			add_settings_field(
-				"mf_default_{$slug}",
+				"pf_default_{$slug}",
 				$name,
 				function() use ( $slug, $value, $all_forms ) {
 					$options_array = [];
@@ -711,60 +786,51 @@ class Admin {
 					}
 
 					printf(
-						'<select name="mf_settings[%s]"><option value="">%s</option>%s</select>',
-						"mf_default_{$slug}", // phpcs:ignore 
-						esc_html__( 'None', 'wp-macs-forms' ),
+						'<select name="pf_settings[%s]"><option value="">%s</option>%s</select>',
+						"pf_default_{$slug}", // phpcs:ignore WordPress.Security.EscapeOutput -- Escaped early
+						esc_html__( 'None', 'proper-forms' ),
 						implode( "\n", $options_array ) // phpcs:ignore WordPress.Security.EscapeOutput -- Escaped early
 					);
 				},
-				'mf_settings_page',
-				'macs_forms_settings_default'
+				'pf_settings_page',
+				'proper_forms_settings_default'
 			);
 		}
 	}
-	
-	public function mf_cipher_key_render() {
-		$options = get_option( 'mf_settings' );
-		$value   = ! empty( $options['cipher_key'] ) ? $options['cipher_key'] : '';
-		?>
-		<input type="text" name="mf_settings[cipher_key]" value="<?php echo esc_attr( $value ); ?>">
-		<?php
-	}
 
-
-	public function mf_captcha_secret_render() {
-		$options = get_option( 'mf_settings' );
+	public function pf_captcha_secret_render() {
+		$options = get_option( 'pf_settings' );
 		$value   = ! empty( $options['captcha_secret'] ) ? $options['captcha_secret'] : '';
 		?>
-		<input type="text" name="mf_settings[captcha_secret]" value="<?php echo esc_attr( $value ); ?>">
+		<input type="text" name="pf_settings[captcha_secret]" value="<?php echo esc_attr( $value ); ?>">
 		<?php
 	}
 
-	public function mf_captcha_key_render() {
-		$options = get_option( 'mf_settings' );
+	public function pf_captcha_key_render() {
+		$options = get_option( 'pf_settings' );
 		$value   = ! empty( $options['captcha_key'] ) ? $options['captcha_key'] : '';
 		?>
-		<input type="text" name="mf_settings[captcha_key]" value="<?php echo esc_attr( $value ); ?>">
+		<input type="text" name="pf_settings[captcha_key]" value="<?php echo esc_attr( $value ); ?>">
 		<?php
 	}
 
-	public function mf_nf_shortcode_render() {
-		$options = get_option( 'mf_settings' );
+	public function pf_nf_shortcode_render() {
+		$options = get_option( 'pf_settings' );
 		$value   = ! empty( $options['nf_shortcode'] ) ? $options['nf_shortcode'] : '';
 		?>
-		<label for="mf_nf_shortcode">
-		<input name="mf_settings[nf_shortcode]" type="checkbox" id="mf_nf_shortcode" value="1" <?php checked( 1, $value ); ?>>
+		<label for="pf_nf_shortcode">
+		<input name="pf_settings[nf_shortcode]" type="checkbox" id="pf_nf_shortcode" value="1" <?php checked( 1, $value ); ?>>
 		Support Ninja Forms shortcodes</label>
 		<?php
 	}
 
-	public function mf_options_page() {
+	public function pf_options_page() {
 		?>
 		<form action='options.php' method='post'>
-			<h2>MACS Forms</h2>
+			<h2>Proper Forms</h2>
 			<?php
-			settings_fields( 'mf_settings_page' );
-			do_settings_sections( 'mf_settings_page' );
+			settings_fields( 'pf_settings_page' );
+			do_settings_sections( 'pf_settings_page' );
 			submit_button();
 			?>
 		</form>
@@ -786,22 +852,30 @@ class Admin {
 	/**
 	 * Retrieves all forms as ID => title array and caches it
 	 */
-	protected function get_all_published_forms() {
+	public function get_all_published_forms() {
 
-		$forms_array = wp_cache_get( 'all_forms_array', 'macs_forms' );
+		/**
+		 * wp_reset_postdata() doesn't work after the WP_Query in admin context
+		 * and the following custom loop overwrites global post. To avoid this we are
+		 * saving $post global in local variable and restoring it later manually
+		 */
+		global $post;
+		$edited_post = $post;
+
+		$forms_array = wp_cache_get( 'all_forms_array', 'proper_forms' );
 
 		if ( false === $forms_array ) {
 
-			$forms_query = new \WP_Query(
-				[
-					'post_type'           => 'mf_form',
-					'posts_per_page'      => 500, //phpcs:ignore
-					'no_found_rows'       => true,
-					'ignore_sticky_posts' => true,
-					'post_status'         => 'publish',
-					'sub_query'           => false,
-				]
-			);
+			$forms_query = new \WP_Query( [
+				'post_type'           => 'pf_form',
+				'posts_per_page'      => 500,
+				'no_found_rows'       => true,
+				'ignore_sticky_posts' => true,
+				'post_status'         => 'publish',
+				'sub_query'           => false,
+				'orderby'             => 'title',
+				'order'               => 'ASC',
+			] );
 
 			$forms_array = [];
 
@@ -810,9 +884,11 @@ class Admin {
 				$forms_array[ get_the_ID() ] = get_the_title();
 			endwhile;
 
-			wp_reset_query();
+			wp_reset_postdata();
 
-			wp_cache_set( 'all_forms_array', $forms_array, 'macs_forms', MONTH_IN_SECONDS );
+			$post = $edited_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- see comment before the WP loop
+
+			wp_cache_set( 'all_forms_array', $forms_array, 'proper_forms', MONTH_IN_SECONDS );
 		}
 
 		return $forms_array;
@@ -854,7 +930,7 @@ class Admin {
 	 */
 	public function force_draft_on_non_unique( $data, $postarr ) {
 
-		if ( 'mf_form' !== $data['post_type'] ) {
+		if ( 'pf_form' !== $data['post_type'] ) {
 			return $data;
 		}
 
@@ -884,14 +960,14 @@ class Admin {
 	/**
 	 * Renders custom admin notices
 	 */
-	public function mf_admin_notices() {
+	public function pf_admin_notices() {
 
 		if ( 1 !== filter_input( INPUT_GET, 'non_unique_title', FILTER_VALIDATE_INT ) ) {
 			return;
 		}
 		?>
 		<div class="notice notice-error">
-			<p><strong><?php esc_html_e( 'A Form with the same title already exists on this site. This Form has been saved as DRAFT. You have to change its title to be able to publish it.', 'wp-macs-forms' ); ?></strong></p>
+			<p><strong><?php esc_html_e( 'A Form with the same title already exists on this site. This Form has been saved as DRAFT. You have to change its title to be able to publish it.', 'proper-forms' ); ?></strong></p>
 		</div>
 		<?php
 	}
@@ -903,15 +979,71 @@ class Admin {
 	 */
 	public function add_form_preview_btn( $post ) {
 
-		if ( 'mf_form' !== $post->post_type ) {
+		if ( 'pf_form' !== $post->post_type ) {
 			return;
 		}
 
-		$preview_url = add_query_arg( 'mf_form_preview', absint( $post->ID ), home_url() );
+		$preview_url = add_query_arg( 'pf_form_preview', absint( $post->ID ), home_url() );
 		?>
-		<div class="misc-pub-section mf_preview_btn" style="float:left;">
-			<a class="preview button" href="<?php echo esc_url( $preview_url ); ?>" target="_blank" id="mf_post-preview"><?php echo esc_html__( 'Preview Form', 'wp-macs-forms' ); ?><span class="screen-reader-text"> <?php echo esc_html__( '(opens in a new window)', 'wp-macs-forms' ); ?> </span></a>
+		<div class="misc-pub-section pf_preview_btn" style="float:left;">
+			<a class="preview button" href="<?php echo esc_url( $preview_url ); ?>" target="_blank" id="pf_post-preview"><?php echo esc_html__( 'Preview Form', 'proper-forms' ); ?><span class="screen-reader-text"> <?php echo esc_html__( '(opens in a new window)', 'proper-forms' ); ?> </span></a>
 		</div>
+	<?php
+	}
+
+	/**
+	 * Renders jquery code in admin footer to add "Download All Submissions" button
+	 *
+	 * @param $data
+	 */
+	public function admin_posts_list_footer( $data ) {
+		global $post_type;
+
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		$form_id = filter_input( INPUT_GET, 'filter-form', FILTER_VALIDATE_INT );
+
+		if ( $post_type === 'pf_sub' && is_int( $form_id ) && $form_id > 0 ) {
+			$url = esc_url( wp_nonce_url( admin_url( "admin-post.php?action=pf_download.csv&form_id={$form_id}" ), 'pf-export', 'pf-export-nonce' ) );
+			?>
+
+			<script id="pf-downloads" type="text/javascript">
+				jQuery(document).ready(function() {
+					var button = '<a href="<?php echo esc_url( $url ); ?>" class="button-primary nf-download-all"><?php echo esc_html__( 'Download All Submissions', 'proper-forms' ); ?></a>';
+					jQuery( '#doaction2' ).after( button );
+				});
+			</script>
 		<?php
+		}
+	}
+
+	/**
+	 * Action callback for downloads
+	 */
+	public function pf_export_callback() {
+
+		// Only site owners can export data
+		if (
+			! isset( $_GET['pf-export-nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( $_GET['pf-export-nonce'] ), 'pf-export' ) ||
+			! current_user_can( 'edit_pf_subs' )
+		) {
+			wp_die( esc_html__( 'Sorry, you do not have sufficient privilege to perform this operation', 'proper-forms' ) );
+		}
+
+		$form_id = filter_input( INPUT_GET, 'form_id', FILTER_VALIDATE_INT );
+
+		// Form ID param is required
+		if ( ! is_int( $form_id ) || $form_id < 1 ) {
+			wp_die( esc_html__( 'Sorry, the form ID is missing in the request', 'proper-forms' ) );
+		}
+
+		$sub_time  = date( 'Y-m-d-H:i' );
+		$filename  = "pf_form_{$form_id}_subs_" . $sub_time . ".csv";
+		$downloads = new Downloads( $form_id );
+		$downloads->get_submissions();
+		$downloads->output_csv_file( $filename );
 	}
 }

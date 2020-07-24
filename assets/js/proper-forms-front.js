@@ -2,17 +2,23 @@ jQuery(document).ready(function ($) {
   /**
    * MAIN PROPER FORMS CONTROLLER
    */
-  var ProperForms = new function () {
+
+  var ProperForms = new function (e) {
+
     var self = this
 
+    self.field = ''
     self.formElement = ''
     self.formSuccessBox = ''
     self.formErrorBox = ''
+    self.formWrapper = ''
+
 
     self.init = function ($formEl) {
+
       self.formElement = $formEl
-      self.formSuccessBox = $formEl.closest('.mf_forms__container').find('.mf_form__success')
-      self.formErrorBox = $formEl.closest('.mf_forms__container').find('.mf_form__errors')
+      self.formName = $( '.pf_form__title', $formEl ).val()
+
       self.bindFileUploads()
       self.bindSubmit()
 
@@ -28,7 +34,7 @@ jQuery(document).ready(function ($) {
      * After successful form submission file post will get published and binded to submission post.
      */
     self.bindFileUploads = function () {
-      var fileFields = self.formElement.find('.mf_field--file')
+      var fileFields = self.formElement.find('.pf_field--file')
 
       fileFields.each(function () {
         var upload = new PFFileUpload()
@@ -41,17 +47,19 @@ jQuery(document).ready(function ($) {
      */
     self.bindSubmit = function () {
       // add error validation after click submit button
-      $('.mf_field--submit').on('click', function () {
-        $('.mf-required input, .mf-required textarea, .mf_field select, .mf_fileupload_callback_id').focus().focusout()
-      })
+      var myForm
 
+      self.formElement.find('.pf_field--submit').on('click', function () {
+        myForm = $(this).closest('.pf_form__form')
+        myForm.find('.pf-required input, .pf-required textarea, .pf_field select, .pf_field ul li radio, .pf_fileupload_callback_id').focus().focusout()
+      })
       // Submit form
       self.formElement.submit(function (e) {
         e.preventDefault()
 
         var hasErrors = 0
         // Validate all fields again on submit
-        $('.mf_field input, .mf_field textarea, .mf_field select, .mf_fileupload_callback_id').each(function () {
+        myForm.find('.pf_field input, .pf_field textarea, .pf_field select, .pf_field ul li radio, .pf_fileupload_callback_id').each(function () {
           if (PFValidator.init($(this)) === false) {
             hasErrors = 1
           }
@@ -61,14 +69,23 @@ jQuery(document).ready(function ($) {
           return
         }
 
+        var i = 0
+
+        $('.pf_field--recaptcha').each(function () {
+          if ($(this).parents('.pf_form__form').attr('id') === myForm.attr('id')) {
+            return false
+          }
+          i++
+        })
+
         var data = {
-          action: 'mf_submit_form',
-          nonce_mf_submit: PF.ajaxNonce,
-          recaptcha_response: grecaptcha.getResponse(),
+          action: 'pf_submit_form',
+          nonce_pf_submit: PF.ajaxNonce,
+          recaptcha_response: grecaptcha.getResponse(i),
           form_data: {}
         }
 
-        var fields = $(':input', $(this)).serializeArray()
+        var fields = myForm.find(':input', $(this)).serializeArray()
 
         $.each(fields, function (i, field) {
           // skip undefined
@@ -92,21 +109,25 @@ jQuery(document).ready(function ($) {
 
         data.form_data = JSON.stringify(data.form_data)
 
+
         $.ajax({
           url: PF.ajaxURL,
           method: 'post',
-          action: 'mf_submit_form',
-          nonce_mf_submit: PF.ajaxNonce,
+          action: 'pf_submit_form',
+          nonce_pf_submit: PF.ajaxNonce,
           data: data
         }).done(function (response) {
           if (!response.success) {
             self.onFailure()
+
             return
           }
 
-          self.onSuccess()
-        }).fail(function () {
-          self.onFailure()
+          self.onSuccess( response.data, myForm.attr('id') )
+
+        }).fail(function (response ) {
+          self.onFailure( response.data, response.responseJSON.data, myForm.attr('id') )
+
         })
       })
     }
@@ -116,7 +137,10 @@ jQuery(document).ready(function ($) {
       var selects = self.formElement.find('select')
 
       selects.each(function () {
-        $(this).select2({ dropdownParent: self.formElement })
+        $(this).select2({
+          dropdownParent: self.formElement,
+          width: 'style'
+        })
       })
 
       selects.attr('aria-hidden', false)
@@ -130,30 +154,85 @@ jQuery(document).ready(function ($) {
 
       self.formElement.on('click', '.select-clear', function (e) {
         e.preventDefault()
-        var $select = $(this).parents('.mf_field').find('select')
+        var $select = $(this).parents('.pf_field').find('select')
         $select.val($select.find('option:first').attr('value')).change()
         $select.select2('close')
         $(this).remove()
       })
     }
 
+    configPF = function() {
+
+      var form_ID = $('input[name=form_id]').val()
+      var config  = PF_CONFIG[form_ID]
+
+      return config
+
+    }
+
     /**
      * After succesful submission
      */
-    self.onSuccess = function () {
-      self.formElement.hide()
-      self.formErrorBox.hide()
-      self.formSuccessBox.show()
+    self.onSuccess = function (data, formID) {
+
+      var formToHide = document.getElementById(formID);
+
+      this.formSuccessBox = $(formToHide).siblings('.pf_form__success')
+      this.formErrorBox = $(formToHide).siblings('.pf_form__errors')
+
+      var formRedirect = configPF()
+
+      if  ( typeof formRedirect !== 'undefined' && typeof formRedirect.redirect !== 'undefined' && formRedirect.redirect.length ) {
+
+        this.formSuccessBox.hide()
+        self.redirect(formRedirect.redirect)
+
+      } else {
+
+        $(formToHide).hide()
+        this.formErrorBox.hide()
+        this.formSuccessBox.show()
+    }
+
+      self.sendAnalyticsData()
+
     }
 
     /**
 
      * After submission fail
      */
-    self.onFailure = function () {
-      self.formSuccessBox.hide()
-      self.formErrorBox.show()
+    self.onFailure = function (data, captchaResponse, formID) {
+
+      var formToHide = document.getElementById(formID);
+
+      this.formSuccessBox = $(formToHide).siblings('.pf_form__success')
+      this.formErrorBox = $(formToHide).siblings('.pf_form__errors')
+
+      this.formSuccessBox.hide()
+
+      if (captchaResponse !== null ) {
+        this.formErrorBox.text(captchaResponse).css('color', 'red')
+      }
+
+      this.formErrorBox.show()
     }
+
+    self.sendAnalyticsData = function() {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push( {
+        'event'    : 'FormSubmission',
+        'formID'   : self.formId,
+        'formTitle' : self.formName,
+      } )
+    }
+
+    self.redirect = function(redirectUrl) {
+
+    window.location.href = redirectUrl
+
+    }
+
   }()
 
   /**
@@ -169,12 +248,12 @@ jQuery(document).ready(function ($) {
     self.input = ''
 
     // WP Ajax url with callback action query string
-    self.ajaxURL = PF.ajaxURL + '?action=mf_fileupload'
+    self.ajaxURL = PF.ajaxURL + '?action=pf_fileupload'
 
-    // Parent MACS Form Form ID - to retrieve field settings from
+    // Parent Proper Form Form ID - to retrieve field settings from
     self.formId = ''
 
-    // MACS Forms field ID
+    // Proper Forms field ID
     self.fieldId = ''
 
     // WP Nonce
@@ -186,13 +265,13 @@ jQuery(document).ready(function ($) {
     self.init = function ($fieldEl) {
       // Populate properties
       self.parent = $fieldEl
-      self.button = $fieldEl.find('.mf_fileupload_btn')
+      self.button = $fieldEl.find('.pf_fileupload_btn')
       self.input = $fieldEl.find('input[type="file"]')
-      self.nonce = $fieldEl.find('input.mf_fileupload_nonce').val()
-      self.wpRestNonce = $fieldEl.closest('form').find('.mf_form__wp_rest_nonce').val()
-      self.formId = $fieldEl.closest('form').find('input.mf_form__id').val()
+      self.nonce = $fieldEl.find('input.pf_fileupload_nonce').val()
+      self.wpRestNonce = $fieldEl.closest('form').find('.pf_form__wp_rest_nonce').val()
+      self.formId = $fieldEl.closest('form').find('input.pf_form__id').val()
       self.fieldId = self.input.attr('id')
-      self.wpFileInput = $fieldEl.find('input.mf_fileupload_callback_id')
+      self.wpFileInput = $fieldEl.find('input.pf_fileupload_callback_id')
 
       // Kick it off
       self.bindUploadClicks()
@@ -218,7 +297,7 @@ jQuery(document).ready(function ($) {
       var file = self.input[0].files
       var uploadData = new FormData()
 
-      self.parent.find('.mf_error').remove()
+      self.parent.find('.pf_error').remove()
 
       uploadData.append('form_id', self.formId)
       uploadData.append('field_id', self.fieldId)
@@ -254,13 +333,14 @@ jQuery(document).ready(function ($) {
     }
 
     self.fail = function (data) {
-      var $error = $('<span>', { class: 'mf_error', text: data })
+      var $error = $('<span>', { class: 'pf_error', text: data })
+
       $error.appendTo(self.parent)
       self.button.text(PF.strings.select_file)
     }
 
     self.reset = function () {
-      self.parent.find('.mf_fileupload__uploaded').remove()
+      self.parent.find('.pf_fileupload__uploaded').remove()
       self.wpFileInput.val('')
       self.input.val('')
       self.button.text(PF.strings.select_file)
@@ -269,12 +349,12 @@ jQuery(document).ready(function ($) {
 
     self.disable = function () {
       self.input.prop('disabled', true)
-      self.parent.addClass('mf_disabled')
+      self.parent.addClass('pf_disabled')
     }
 
     self.enable = function () {
       self.input.prop('disabled', false)
-      self.parent.removeClass('mf_disabled')
+      self.parent.removeClass('pf_disabled')
     }
 
     /**
@@ -293,8 +373,8 @@ jQuery(document).ready(function ($) {
      * Appends HTML with uploaded file name and removal link
      */
     self.appendUploaded = function (fileData) {
-      var removeEl = $('<span>').text(PF.strings.remove_file).addClass('mf_fileupload__remove')
-      var uploadedInfo = $('<p/>').text(fileData.name).addClass('mf_fileupload__uploaded')
+      var removeEl = $('<span>').text(PF.strings.remove_file).addClass('pf_fileupload__remove')
+      var uploadedInfo = $('<p/>').text(fileData.name).addClass('pf_fileupload__uploaded')
       removeEl.appendTo(uploadedInfo)
       uploadedInfo.appendTo(self.parent)
 
@@ -319,13 +399,13 @@ jQuery(document).ready(function ($) {
 
     self.init = function ($fieldEl) {
       // Bail out early if globals from localized scripts are not present
-      if (!PF_ERR || !PF) {
+      if (!PF_CONFIG || !PF) {
         return
       }
 
       self.field = $fieldEl
-      self.parent = $fieldEl.closest('.mf_field')
-      self.formEl = $fieldEl.closest('.mf_form')
+      self.parent = $fieldEl.closest('.pf_field')
+      self.formEl = $fieldEl.closest('.pf_form')
       self.validationType = self.parent.data('validate')
 
       self.cleanErrors()
@@ -333,15 +413,33 @@ jQuery(document).ready(function ($) {
       self.getFieldValue()
 
       return self.validate()
+
     }
 
     self.validate = function () {
-      // check if required fields are filled before even trying to check values
-      if (self.isRequired() && !self.fieldValue) {
-        self.hasErrors = 1
-        self.outputError(PF.strings.required_error)
-        return false
+
+      if ( self.field.hasClass('select2-search__field') ) {
+        return true
       }
+
+      if ( self.validationType === 'multiselect'){
+
+        if ( self.isRequired() && self.fieldValue.length === 0 ) {
+          self.hasErrors = 1
+          self.outputError(PF.strings.required_error)
+          return false
+        }
+
+      } else {
+        // check if required fields are filled before even trying to check values
+        if (self.isRequired() &&  ( !self.fieldValue || self.field.val() === '' ) ) {
+
+          self.hasErrors = 1
+          self.outputError(PF.strings.required_error)
+          return false
+        }
+      }
+
 
       // validate data based on validation type provided in HTML's data attribute
       var errorMsg = ''
@@ -358,22 +456,25 @@ jQuery(document).ready(function ($) {
         case 'date' :
 
           var formatToRegex = {
-            'DD/MM/YYYY': /\d{2}\/\d{2}\/\d{4}/,
-            'DD-MM-YYYY': /\d{2}\-\d{2}\-\d{4}/,
-            'DD.MM.YYYY': /\d{2}\.\d{2}\.\d{4}/,
-            'MM/DD/YYYY': /\d{2}\/\d{2}\/\d{4}/,
-            'MM-DD-YYYY': /\d{2}\-\d{2}\-\d{4}/,
-            'MM.DD.YYYY': /\d{2}\.\d{2}\.\d{4}/,
-            'YYYY-MM-DD': /\d{4}\-\d{2}\-\d{2}/,
-            'YYYY/MM/DD': /\d{4}\/\d{2}\/\d{2}/,
-            'YYYY.MM.DD': /\d{4}\.\d{2}\.\d{2}/
+            'dd/mm/yy': /\d{2}\/\d{2}\/\d{4}/,
+            'dd-mm-yy': /\d{2}\-\d{2}\-\d{4}/,
+            'dd.mm.yy': /\d{2}\.\d{2}\.\d{4}/,
+            'mm/dd/yy': /\d{2}\/\d{2}\/\d{4}/,
+            'mm-dd-yy': /\d{2}\-\d{2}\-\d{4}/,
+            'mm.dd.yy': /\d{2}\.\d{2}\.\d{4}/,
+            'yy-mm-dd': /\d{4}\-\d{2}\-\d{2}/,
+            'yy/mm/dd': /\d{4}\/\d{2}\/\d{2}/,
+            'yy.mm.dd': /\d{4}\.\d{2}\.\d{2}/
           }
+
           var regex = formatToRegex[ self.parent.data('format') ] || /\d{2}\/\d{2}\/\d{4}/
 
-          if (!self.fieldValue.match(regex)) {
+          if (!self.fieldValue.match(regex) && ( $('.datepicker').val().length !== 0)) {
+
             self.hasErrors = 1
             errorMsg = PF.strings.date_format_error
           }
+
           break
       }
 
@@ -410,7 +511,7 @@ jQuery(document).ready(function ($) {
      * Checks if field element is marked as required in HTML
      */
     self.isRequired = function () {
-      if (self.field.prop('required') || self.parent.hasClass('mf-required')) {
+      if (self.field.prop('required') || self.parent.hasClass('pf-required')) {
         return true
       }
 
@@ -426,7 +527,10 @@ jQuery(document).ready(function ($) {
      * 3. Ultimate fallback: hardcoded english string. Lo siento pero no comprendo, señor.
      */
     self.getErrorMsg = function (fieldId, defaultMsg) {
-      if (!PF_ERR || !PF_ERR[fieldId]) {
+
+      var formConfig = configPF()
+
+      if (!formConfig.errors || !formConfig.errors[fieldId]) {
         // Fallback: return msg probivided as param
         if (defaultMsg) {
           return defaultMsg
@@ -441,21 +545,40 @@ jQuery(document).ready(function ($) {
         return PF.strings.default_error
       }
 
-      return PF_ERR[fieldId]
+      return formConfig.errors[fieldId]
     }
 
     /**
      * Adds error classes to HTML and prints span element with custom error message
      */
     self.outputError = function (msg) {
+
+      if ( (self.parent).hasClass('pf_field--checkboxes')
+        || (self.parent).hasClass('pf_field--radios')
+      ) {
+
+      fieldVal = self.parent.attr('id')
+
+      } else if( (self.parent).hasClass('pf_field--file') ) {
+
+        fieldVal = self.field.attr('name')
+      } else if( (self.parent).hasClass('pf_field--multiselect') ) {
+
+        fieldVal = self.parent.attr('name')
+
+      } else {
+
+        fieldVal = self.field.attr('id')
+      }
+
       var errorEl = $('<span>', {
-        class: 'mf_error',
-        text: msg
+        class: 'pf_error',
+        text: self.getErrorMsg(fieldVal)
       })
 
-      self.field.addClass('mf_error_shadow')
-      self.parent.addClass('mf_has_errors')
-      self.formEl.addClass('mf_has_errors')
+      self.field.addClass('pf_error_shadow')
+      self.parent.addClass('pf_has_errors')
+      self.formEl.addClass('pf_has_errors')
 
       errorEl.appendTo(self.parent)
     }
@@ -464,14 +587,14 @@ jQuery(document).ready(function ($) {
      * Resets error messages and validator state
      */
     self.cleanErrors = function () {
-      self.parent.removeClass('mf_has_errors')
-      self.formEl.removeClass('mf_has_errors')
-      self.field.removeClass('mf_error_shadow')
-      self.parent.find('.mf_error').remove()
+      self.parent.removeClass('pf_has_errors')
+      self.formEl.removeClass('pf_has_errors')
+      self.field.removeClass('pf_error_shadow')
+      self.parent.find('.pf_error').remove()
       self.hasErrors = 0
     }
 
-    $('.mf_form__form').on('submit', function () {
+    $('.pf_form__form').on('submit', function () {
       self.validate()
     })
   }()
@@ -479,37 +602,55 @@ jQuery(document).ready(function ($) {
   // KICK IT OFF!
 
   // Init main controller on every form on the page
-  $('.mf_form__form').each(function () {
+  $('.pf_form__form').each(function () {
     ProperForms.init($(this))
   })
 
   // Init validator when field's value change
-  $('.mf_field input, .mf_field textarea, .mf_field select, .mf_fileupload_callback_id').on('blur change', function () {
+  $('.pf_field input, .pf_field textarea, .pf_field select, .pf_field ul li radio, .pf_fileupload_callback_id').on(' change focus', function (e) {
     var check = PFValidator.init($(this))
   })
-})
+
+    $('.pf_field--date').each(function() {
+
+      var customFormat = $(this).data('format');
+
+      $('.datepicker').datepicker({
+        dateFormat: customFormat,
+        changeYear: true,
+        changeMonth: true,
+        yearRange: '-100:+100'
+       }).off('focus')
+        .click(function () {
+         $(this).datepicker('show');
+       });
+    });
 
 // TODO add as main controller's method
-function resizeForms () {
-  $('.mf_form__form select').each(function () {
-    var newWidth = $(this).width()
-    if (newWidth === lastWindowWidth) {
-      return
-    }
-    lastWindowWidth = newWidth
 
-    var $form = $(this).parents('.mf_form__form')
+  function resizeForms () {
+    $('.pf_form__form select').each(function () {
+      var newWidth = $(this).width()
+      if (newWidth === lastWindowWidth) {
+        return
+      }
+      lastWindowWidth = newWidth
 
-    $(this).select2('destroy')
-    $(this).width($(this).parent().width())
-    $(this).select2({ dropdownParent: $form })
+      var $form = $(this).parents('.pf_form__form')
 
-    $('select', $form).attr('aria-hidden', false)
-    $('.select2', $form).attr('aria-hidden', true)
-  })
-  $('.popup__overlay').find('select').each(function () {
-    $(this).select2()
-  })
-}
-var lastWindowWidth = $(window).width()
-$(window).resize(_.debounce(resizeForms, 100))
+      $(this).select2('destroy')
+      $(this).width($(this).parent().width())
+      $(this).select2({ dropdownParent: $form })
+
+      $('select', $form).attr('aria-hidden', false)
+      $('.select2', $form).attr('aria-hidden', true)
+    })
+    $('.popup__overlay').find('select').each(function () {
+      $(this).select2()
+    })
+  }
+
+  var lastWindowWidth = $(window).width()
+  $(window).resize(lodash.debounce(resizeForms, 100))
+
+})

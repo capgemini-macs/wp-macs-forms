@@ -3,6 +3,7 @@
  * List of Countries name required to the country select input
  */
 $countries = array(
+	''   => '',
 	'AF' => __( 'Afghanistan', 'capgemini' ),
 	'AX' => __( 'Aland Islands', 'capgemini' ),
 	'AL' => __( 'Albania', 'capgemini' ),

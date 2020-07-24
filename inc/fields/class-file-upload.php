@@ -1,6 +1,6 @@
 <?php
 
-namespace MACS_Forms\Fields;
+namespace Proper_Forms\Fields;
 
 class File_Upload extends Field {
 
@@ -58,30 +58,30 @@ class File_Upload extends Field {
 	 * Renders the field on front-end
 	 */
 	public function render_field() {
-		$nonce_action = sprintf( 'mf-fileupload-%s', $this->id );
+		$nonce_action = sprintf( 'pf-fileupload-%s', $this->id );
 		$extensions   = implode( ', ', $this->allowed_extensions_to_array() );
 		$filesize     = ! empty( $this->max_filesize ) ? round( $this->max_filesize / 1000, 2 ) : '10';
 		?>
 
-		<div class="mf_field mf_field--file <?php echo esc_attr( $this->get_render_required_class() ); ?>" data-validate="upload">
-			<label for="<?php echo esc_attr( $this->id ); ?>" /><?php echo esc_html( $this->label ); ?>
+		<div class="pf_field pf_field--file <?php echo esc_attr( $this->get_render_required_class() ); ?>" data-validate="upload">
+			<label for="<?php echo esc_attr( $this->id ); ?>"><?php echo esc_html( $this->label ); ?>
 				<?php echo wp_kses_post( $this->get_render_required_symbol() ); ?>
 			</label>
-			<button class="mf_fileupload_btn"><?php echo esc_html__( 'Select File', 'wp-macs-forms' ); ?></button>
+			<button class="pf_fileupload_btn"><?php echo esc_html__( 'Select File', 'proper-forms' ); ?></button>
 
-			<div class="mf_field_info">
+			<div class="pf_field_info">
 				<?php if ( ! empty( $extensions ) ) : ?>
-					<span class=""><?php echo esc_html__( 'Allowed extensions: ', 'wp-macs-forms' ); ?><?php echo esc_html( $extensions ); ?></span><br />
+					<span class=""><?php echo esc_html__( 'Allowed extensions: ', 'proper-forms' ); ?><?php echo esc_html( $extensions ); ?></span><br />
 				<?php endif; ?>
 
 				<?php if ( ! empty( $filesize ) ) : ?>
-					<span class=""><?php echo esc_html__( 'Maximum file size: ', 'wp-macs-forms' ); ?><?php echo esc_html( $filesize ); ?>MB</span>
+					<span class=""><?php echo esc_html__( 'Maximum file size: ', 'proper-forms' ); ?><?php echo esc_html( $filesize ); ?>MB</span>
 				<?php endif; ?>
 			</div>
 
-			<input type="file" id="<?php echo esc_attr( $this->id ); ?>" class="mf_field__input onsubmit-ignore empty" name="file_<?php echo esc_attr( $this->id ); ?>" accept="<?php echo esc_attr( $this->allowed_extensions ); ?>" <?php echo esc_attr( $this->get_render_required() ); ?>/>
-			<input type="hidden" name="nonce_<?php echo esc_attr( $this->id ); ?>" class="mf_fileupload_nonce onsubmit-ignore" value="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>" />
-			<input type="text" name="<?php echo esc_attr( $this->id ); ?>" class="mf_fileupload_callback_id" value="<?php echo esc_attr( $this->saved_value ); ?>" />
+			<input type="file" id="<?php echo esc_attr( $this->id ); ?>" class="pf_field__input onsubmit-ignore empty" name="file_<?php echo esc_attr( $this->id ); ?>" accept="<?php echo esc_attr( $this->allowed_extensions ); ?>" <?php echo esc_attr( $this->get_render_required() ); ?>/>
+			<input type="hidden" name="nonce_<?php echo esc_attr( $this->id ); ?>" class="pf_fileupload_nonce onsubmit-ignore" value="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>" />
+			<input type="text" name="<?php echo esc_attr( $this->id ); ?>" class="pf_fileupload_callback_id" value="<?php echo esc_attr( $this->saved_value ); ?>" />
 		</div>
 		<?php
 	}
@@ -91,13 +91,13 @@ class File_Upload extends Field {
 	 */
 	public function render_field_settings() {
 		?>
-		<div class="mf-row">
+		<div class="pf-row">
 			<?php
 			$this->render_option(
 				[
 					'type'  => 'text',
 					'name'  => 'label',
-					'label' => __( 'Field label:', 'wp-macs-forms' ),
+					'label' => __( 'Field label:', 'proper-forms' ),
 					'value' => $this->get_value( 'label' ),
 				]
 			);
@@ -106,7 +106,7 @@ class File_Upload extends Field {
 				[
 					'type'  => 'text',
 					'name'  => 'error_msg',
-					'label' => __( 'Error message:', 'wp-macs-forms' ),
+					'label' => __( 'Error message:', 'proper-forms' ),
 					'value' => $this->get_value( 'error_msg' ),
 				]
 			);
@@ -115,7 +115,7 @@ class File_Upload extends Field {
 				[
 					'type'  => 'text',
 					'name'  => 'pardot_handler',
-					'label' => __( 'Field key:', 'wp-macs-forms' ),
+					'label' => __( 'Field key:', 'proper-forms' ),
 					'value' => $this->get_value( 'pardot_handler' ),
 				]
 			);
@@ -124,7 +124,7 @@ class File_Upload extends Field {
 				[
 					'type'  => 'number',
 					'name'  => 'max_filesize',
-					'label' => __( 'File max size (in KB)', 'wp-macs-forms' ),
+					'label' => __( 'File max size (in KB)', 'proper-forms' ),
 					'value' => $this->get_value( 'max_filesize' ),
 					'min'   => 0,
 					'max'   => 20000,
@@ -135,7 +135,7 @@ class File_Upload extends Field {
 				[
 					'type'  => 'text',
 					'name'  => 'allowed_extensions',
-					'label' => __( 'Allowed extensions (comma separated):', 'wp-macs-forms' ),
+					'label' => __( 'Allowed extensions (comma separated):', 'proper-forms' ),
 					'value' => $this->get_value( 'allowed_extensions' ),
 				]
 			);
@@ -144,7 +144,7 @@ class File_Upload extends Field {
 				[
 					'type'    => 'checkbox',
 					'name'    => 'is_required',
-					'label'   => __( 'Make this field Required field:', 'wp-macs-forms' ),
+					'label'   => __( 'Make this field Required field:', 'proper-forms' ),
 					'value'   => $this->get_value( 'is_required' ),
 					'checked' => checked( 1, $this->get_value( 'is_required' ), false ),
 					'class'   => '',
@@ -183,7 +183,7 @@ class File_Upload extends Field {
 	public function validate_input( $input ) {
 
 		if ( true === $this->is_required && is_empty( $input ) ) {
-			return new \WP_Error( 'missing_required_field', __( 'Required Field is missing', 'wp-macs-forms' ), $this->name );
+			return new \WP_Error( 'missing_required_field', __( 'Required Field is missing', 'proper-forms' ), $this->name );
 		}
 
 		return absint( $input );

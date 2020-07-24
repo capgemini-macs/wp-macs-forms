@@ -1,6 +1,6 @@
 <?php
 
-namespace MACS_Forms\Fields;
+namespace Proper_Forms\Fields;
 
 class Consent extends Field {
 
@@ -31,24 +31,24 @@ class Consent extends Field {
 	 */
 	public function render_field() {
 		?>
-			<div class="mf_field mf_field--consent mf-required" data-validate="checkboxes">
-				<div class="mf_consent__wrapper">
-					<input type="checkbox" id="<?php echo esc_attr( $this->id ); ?>" name="<?php echo esc_attr( $this->id ); ?>[]" value="<?php echo esc_attr( $this->id ); ?>" required>
+			<div class="pf_field pf_field--consent pf-required" data-validate="checkboxes">
+				<div class="pf_consent__wrapper">
+					<input type="checkbox" id="<?php echo esc_attr( $this->id ); ?>" name="<?php echo esc_attr( $this->id ); ?>[]" value="1" required>
 					<label for="<?php echo esc_attr( $this->id ); ?>">
 
 						<?php
 						echo wp_kses(
-							sprintf( '%s<span class="mf-required--symbol">*</span>', str_replace( 'rn', '<br>', $this->label ) ),
+							sprintf( '%s&nbsp;<span class="pf-required--symbol">*</span>', str_replace( 'rn', '<br>', $this->label ) ),
 							[
 								'br'     => [],
 								'strong' => [],
 								'em'     => [],
 								'b'      => [],
 								'br'     => [],
-								'span'   => [
+								'span' => [
 									'class' => [],
 								],
-								'a'      => [
+								'a'    => [
 									'href'    => [],
 									'_target' => [],
 								],
@@ -66,14 +66,14 @@ class Consent extends Field {
 	 */
 	public function render_field_settings() {
 		?>
-		<div class="mf-row">
+		<div class="pf-row">
 			<?php
 
 			$this->render_option(
 				[
 					'type'  => 'textarea',
 					'name'  => 'label',
-					'label' => __( 'Field label (textarea):', 'wp-macs-forms' ),
+					'label' => __( 'Field label (textarea):', 'proper-forms' ),
 					'value' => $this->get_value( 'label' ),
 				]
 			);
@@ -82,7 +82,7 @@ class Consent extends Field {
 				[
 					'type'  => 'text',
 					'name'  => 'error_msg',
-					'label' => __( 'Error message:', 'wp-macs-forms' ),
+					'label' => __( 'Error message:', 'proper-forms' ),
 					'value' => $this->get_value( 'error_msg' ),
 				]
 			);
@@ -91,7 +91,7 @@ class Consent extends Field {
 				[
 					'type'  => 'text',
 					'name'  => 'pardot_handler',
-					'label' => __( 'Pardot key:', 'wp-macs-forms' ),
+					'label' => __( 'Field key:', 'proper-forms' ),
 					'value' => $this->get_value( 'pardot_handler' ),
 				]
 			);
@@ -107,7 +107,7 @@ class Consent extends Field {
 	public function validate_input( $input ) {
 
 		if ( true === $this->is_required && is_empty( $input ) ) {
-			return new \WP_Error( 'missing_required_field', __( 'Required Field is missing', 'macs_forms' ), $this->name );
+			return new \WP_Error( 'missing_required_field', __( 'Required Field is missing', 'proper-forms' ), $this->name );
 		}
 
 		$output = array_map(

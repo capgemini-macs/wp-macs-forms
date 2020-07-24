@@ -1,0 +1,1517 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Capgemini Proper Forms\n"
+"POT-Creation-Date: 2019-07-26 09:07+0200\n"
+"PO-Revision-Date: 2019-07-26 08:56+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.3\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: cg-proper-forms.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: inc/class-admin.php:104 inc/fields/class-multi-field.php:111
+#: inc/fields/class-multi-field.php:120 inc/fields/class-multi-field.php:127
+msgid "Delete this row"
+msgstr ""
+
+#: inc/class-admin.php:165
+msgid "Form settings"
+msgstr ""
+
+#: inc/class-admin.php:174
+msgid "Form Builder"
+msgstr ""
+
+#: inc/class-admin.php:199
+msgid "Available Fields"
+msgstr ""
+
+#: inc/class-admin.php:242
+msgid "Form shortcode"
+msgstr ""
+
+#: inc/class-admin.php:251
+msgid "Email notification"
+msgstr ""
+
+#: inc/class-admin.php:266
+msgid "Pardot integration"
+msgstr ""
+
+#: inc/class-admin.php:270
+msgid "Connect this form to Pardot handler"
+msgstr ""
+
+#: inc/class-admin.php:274
+msgid "Pardot handler URL"
+msgstr ""
+
+#: inc/class-admin.php:281
+msgid "Trigger WP Action"
+msgstr ""
+
+#: inc/class-admin.php:296
+msgid "Thank you message"
+msgstr ""
+
+#: inc/class-admin.php:317
+msgid "File data"
+msgstr ""
+
+#: inc/class-admin.php:343 inc/class-admin.php:420
+msgid "Submitted on: "
+msgstr ""
+
+#: inc/class-admin.php:349
+msgid "Attached to submission:"
+msgstr ""
+
+#: inc/class-admin.php:394
+msgid "Submission data"
+msgstr ""
+
+#: inc/class-admin.php:481
+msgid "Shortcode"
+msgstr ""
+
+#: inc/class-admin.php:482
+msgid "Date"
+msgstr ""
+
+#: inc/class-admin.php:504
+msgid "Form"
+msgstr ""
+
+#: inc/class-admin.php:594
+msgid "Any form"
+msgstr ""
+
+#: inc/class-admin.php:644
+msgid "CAPTCHA settings"
+msgstr ""
+
+#: inc/class-admin.php:651
+msgid "Ninja Forms compatibility"
+msgstr ""
+
+#: inc/class-admin.php:659
+msgid "Default Forms"
+msgstr ""
+
+#: inc/class-admin.php:670
+msgid "Google reCAPTCHA site key"
+msgstr ""
+
+#: inc/class-admin.php:678
+msgid "Google reCAPTCHA secret"
+msgstr ""
+
+#: inc/class-admin.php:687
+msgid "Shortcodes"
+msgstr ""
+
+#: inc/class-admin.php:719 inc/forms/class-appended-form.php:59
+msgid "None"
+msgstr ""
+
+#: inc/class-admin.php:888
+msgid ""
+"A Form with the same title already exists on this site. This Form has been "
+"saved as DRAFT. You have to change its title to be able to publish it."
+msgstr ""
+
+#: inc/class-admin.php:907
+msgid "Preview Form"
+msgstr ""
+
+#: inc/class-admin.php:907
+msgid "(opens in a new window)"
+msgstr ""
+
+#: inc/class-admin.php:932
+msgid "Download All Submissions"
+msgstr ""
+
+#: inc/class-admin.php:951
+msgid "Sorry, you do not have sufficient privilege to perform this operation"
+msgstr ""
+
+#: inc/class-admin.php:958
+msgid "Sorry, the form ID is missing in the request"
+msgstr ""
+
+#: inc/class-register-post-types.php:17
+msgid "Forms"
+msgstr ""
+
+#: inc/class-register-post-types.php:18
+msgctxt "post type singular name"
+msgid "Form"
+msgstr ""
+
+#: inc/class-register-post-types.php:19
+msgid "Add New"
+msgstr ""
+
+#: inc/class-register-post-types.php:20
+msgid "Add New Form"
+msgstr ""
+
+#: inc/class-register-post-types.php:21
+msgid "Edit Form"
+msgstr ""
+
+#: inc/class-register-post-types.php:22
+msgid "New Form"
+msgstr ""
+
+#: inc/class-register-post-types.php:23
+msgid "View Form"
+msgstr ""
+
+#: inc/class-register-post-types.php:24
+msgid "Search Forms"
+msgstr ""
+
+#: inc/class-register-post-types.php:61
+msgid "Submissions"
+msgstr ""
+
+#: inc/class-register-post-types.php:62
+msgctxt "post type singular name"
+msgid "Submission"
+msgstr ""
+
+#: inc/class-register-post-types.php:94
+msgid "Submitted Files"
+msgstr ""
+
+#: inc/class-register-post-types.php:95
+msgctxt "post type singular name"
+msgid "File"
+msgstr ""
+
+#: inc/fields/class-checkbox.php:66 inc/fields/class-country.php:59
+#: inc/fields/class-date.php:66 inc/fields/class-email.php:53
+#: inc/fields/class-file-upload.php:100 inc/fields/class-hidden.php:52
+#: inc/fields/class-numbers.php:51 inc/fields/class-radio.php:75
+#: inc/fields/class-select.php:57 inc/fields/class-tel.php:53
+#: inc/fields/class-text.php:52 inc/fields/class-textarea.php:53
+msgid "Field label:"
+msgstr ""
+
+#: inc/fields/class-checkbox.php:75 inc/fields/class-consent.php:85
+#: inc/fields/class-country.php:68 inc/fields/class-date.php:77
+#: inc/fields/class-email.php:62 inc/fields/class-file-upload.php:109
+#: inc/fields/class-hidden.php:63 inc/fields/class-numbers.php:60
+#: inc/fields/class-radio.php:84 inc/fields/class-select.php:66
+#: inc/fields/class-tel.php:62 inc/fields/class-text.php:63
+#: inc/fields/class-textarea.php:62
+msgid "Error message:"
+msgstr ""
+
+#: inc/fields/class-checkbox.php:84 inc/fields/class-consent.php:94
+#: inc/fields/class-country.php:77 inc/fields/class-date.php:88
+#: inc/fields/class-email.php:71 inc/fields/class-file-upload.php:118
+#: inc/fields/class-hidden.php:74 inc/fields/class-numbers.php:69
+#: inc/fields/class-radio.php:93 inc/fields/class-select.php:75
+#: inc/fields/class-tel.php:71 inc/fields/class-text.php:74
+#: inc/fields/class-textarea.php:71
+msgid "Field key:"
+msgstr ""
+
+#: inc/fields/class-checkbox.php:93 inc/fields/class-radio.php:104
+#: inc/fields/class-select.php:86
+msgid "Options:"
+msgstr ""
+
+#: inc/fields/class-checkbox.php:102 inc/fields/class-country.php:88
+#: inc/fields/class-date.php:120 inc/fields/class-email.php:80
+#: inc/fields/class-file-upload.php:147 inc/fields/class-radio.php:122
+#: inc/fields/class-select.php:95 inc/fields/class-tel.php:80
+#: inc/fields/class-text.php:85 inc/fields/class-textarea.php:80
+msgid "Make this field Required field:"
+msgstr ""
+
+#: inc/fields/class-checkbox.php:120 inc/fields/class-consent.php:110
+#: inc/fields/class-country.php:118 inc/fields/class-date.php:175
+#: inc/fields/class-email.php:97 inc/fields/class-file-upload.php:186
+#: inc/fields/class-hidden.php:92 inc/fields/class-numbers.php:99
+#: inc/fields/class-radio.php:139 inc/fields/class-select.php:112
+#: inc/fields/class-tel.php:97 inc/fields/class-text.php:103
+#: inc/fields/class-textarea.php:96
+msgid "Required Field is missing"
+msgstr ""
+
+#: inc/fields/class-consent.php:76
+msgid "Field label (textarea):"
+msgstr ""
+
+#: inc/fields/class-country.php:99
+msgid "Default country"
+msgstr ""
+
+#: inc/fields/class-date.php:48
+msgid "Please use date format: "
+msgstr ""
+
+#: inc/fields/class-date.php:99
+msgid "Date Format:"
+msgstr ""
+
+#: inc/fields/class-date.php:102
+msgid "DD/MM/YYYY"
+msgstr ""
+
+#: inc/fields/class-date.php:103
+msgid "DD-MM-YYYY"
+msgstr ""
+
+#: inc/fields/class-date.php:104
+msgid "DD.MM.YYYY"
+msgstr ""
+
+#: inc/fields/class-date.php:105
+msgid "MM/DD/YYYY"
+msgstr ""
+
+#: inc/fields/class-date.php:106
+msgid "MM-DD-YYYY"
+msgstr ""
+
+#: inc/fields/class-date.php:107
+msgid "MM.DD.YYYY"
+msgstr ""
+
+#: inc/fields/class-date.php:108
+msgid "YYYY-MM-DD"
+msgstr ""
+
+#: inc/fields/class-date.php:109
+msgid "YYYY/MM/DD"
+msgstr ""
+
+#: inc/fields/class-date.php:110
+msgid "YYYY.MM.DD"
+msgstr ""
+
+#: inc/fields/class-date.php:179
+msgid "Date Field does not contain date in valid format"
+msgstr ""
+
+#: inc/fields/class-field.php:143 inc/fields/class-field.php:187
+msgid "Show field settings window"
+msgstr ""
+
+#: inc/fields/class-field.php:146 inc/fields/class-field.php:190
+msgid "Remove field from form"
+msgstr ""
+
+#: inc/fields/class-file-upload.php:70 inc/forms/class-forms.php:94
+msgid "Select File"
+msgstr ""
+
+#: inc/fields/class-file-upload.php:74
+msgid "Allowed extensions: "
+msgstr ""
+
+#: inc/fields/class-file-upload.php:78
+msgid "Maximum file size: "
+msgstr ""
+
+#: inc/fields/class-file-upload.php:127
+msgid "File max size (in KB)"
+msgstr ""
+
+#: inc/fields/class-file-upload.php:138
+msgid "Allowed extensions (comma separated):"
+msgstr ""
+
+#: inc/fields/class-multi-field.php:102
+msgid "Value"
+msgstr ""
+
+#: inc/fields/class-multi-field.php:103
+msgid "Label"
+msgstr ""
+
+#: inc/fields/class-numbers.php:78
+msgid "Make this field required:"
+msgstr ""
+
+#: inc/fields/class-numbers.php:95
+msgid "Number field is missing"
+msgstr ""
+
+#: inc/fields/class-radio.php:113
+msgid "Default Value:"
+msgstr ""
+
+#: inc/fields/class-submit.php:38
+msgid "Submit"
+msgstr ""
+
+#: inc/fields/class-submit.php:48
+msgid "Please set up Google reCAPTCHA site key and secret."
+msgstr ""
+
+#: inc/fields/class-submit.php:70
+msgid "Button label:"
+msgstr ""
+
+#: inc/fields/list-country.php:6
+msgid "Afghanistan"
+msgstr ""
+
+#: inc/fields/list-country.php:7
+msgid "Aland Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:8
+msgid "Albania"
+msgstr ""
+
+#: inc/fields/list-country.php:9
+msgid "Algeria"
+msgstr ""
+
+#: inc/fields/list-country.php:10
+msgid "American Samoa"
+msgstr ""
+
+#: inc/fields/list-country.php:11
+msgid "Andorra"
+msgstr ""
+
+#: inc/fields/list-country.php:12
+msgid "Angola"
+msgstr ""
+
+#: inc/fields/list-country.php:13
+msgid "Anguilla"
+msgstr ""
+
+#: inc/fields/list-country.php:14
+msgid "Antarctica"
+msgstr ""
+
+#: inc/fields/list-country.php:15
+msgid "Antigua And Barbuda"
+msgstr ""
+
+#: inc/fields/list-country.php:16
+msgid "Argentina"
+msgstr ""
+
+#: inc/fields/list-country.php:17
+msgid "Armenia"
+msgstr ""
+
+#: inc/fields/list-country.php:18
+msgid "Aruba"
+msgstr ""
+
+#: inc/fields/list-country.php:19
+msgid "Australia"
+msgstr ""
+
+#: inc/fields/list-country.php:20
+msgid "Austria"
+msgstr ""
+
+#: inc/fields/list-country.php:21
+msgid "Azerbaijan"
+msgstr ""
+
+#: inc/fields/list-country.php:22
+msgid "Bahamas"
+msgstr ""
+
+#: inc/fields/list-country.php:23
+msgid "Bahrain"
+msgstr ""
+
+#: inc/fields/list-country.php:24
+msgid "Bangladesh"
+msgstr ""
+
+#: inc/fields/list-country.php:25
+msgid "Barbados"
+msgstr ""
+
+#: inc/fields/list-country.php:26
+msgid "Belarus"
+msgstr ""
+
+#: inc/fields/list-country.php:27
+msgid "Belgium"
+msgstr ""
+
+#: inc/fields/list-country.php:28
+msgid "Belize"
+msgstr ""
+
+#: inc/fields/list-country.php:29
+msgid "Benin"
+msgstr ""
+
+#: inc/fields/list-country.php:30
+msgid "Bermuda"
+msgstr ""
+
+#: inc/fields/list-country.php:31
+msgid "Bhutan"
+msgstr ""
+
+#: inc/fields/list-country.php:32
+msgid "Bolivia"
+msgstr ""
+
+#: inc/fields/list-country.php:33
+msgid "Bosnia And Herzegovina"
+msgstr ""
+
+#: inc/fields/list-country.php:34
+msgid "Botswana"
+msgstr ""
+
+#: inc/fields/list-country.php:35
+msgid "Bouvet Island"
+msgstr ""
+
+#: inc/fields/list-country.php:36
+msgid "Brazil"
+msgstr ""
+
+#: inc/fields/list-country.php:37
+msgid "British Indian Ocean Territory"
+msgstr ""
+
+#: inc/fields/list-country.php:38
+msgid "Brunei Darussalam"
+msgstr ""
+
+#: inc/fields/list-country.php:39
+msgid "Bulgaria"
+msgstr ""
+
+#: inc/fields/list-country.php:40
+msgid "Burkina Faso"
+msgstr ""
+
+#: inc/fields/list-country.php:41
+msgid "Burundi"
+msgstr ""
+
+#: inc/fields/list-country.php:42
+msgid "Cambodia"
+msgstr ""
+
+#: inc/fields/list-country.php:43
+msgid "Cameroon"
+msgstr ""
+
+#: inc/fields/list-country.php:44
+msgid "Canada"
+msgstr ""
+
+#: inc/fields/list-country.php:45
+msgid "Cape Verde"
+msgstr ""
+
+#: inc/fields/list-country.php:46
+msgid "Cayman Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:47
+msgid "Central African Republic"
+msgstr ""
+
+#: inc/fields/list-country.php:48
+msgid "Chad"
+msgstr ""
+
+#: inc/fields/list-country.php:49
+msgid "Chile"
+msgstr ""
+
+#: inc/fields/list-country.php:50
+msgid "China"
+msgstr ""
+
+#: inc/fields/list-country.php:51
+msgid "Christmas Island"
+msgstr ""
+
+#: inc/fields/list-country.php:52
+msgid "Cocos (Keeling) Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:53
+msgid "Colombia"
+msgstr ""
+
+#: inc/fields/list-country.php:54
+msgid "Comoros"
+msgstr ""
+
+#: inc/fields/list-country.php:55
+msgid "Congo"
+msgstr ""
+
+#: inc/fields/list-country.php:56
+msgid "Congo, Democratic Republic"
+msgstr ""
+
+#: inc/fields/list-country.php:57
+msgid "Cook Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:58
+msgid "Costa Rica"
+msgstr ""
+
+#: inc/fields/list-country.php:59
+msgid "Cote D'Ivoire"
+msgstr ""
+
+#: inc/fields/list-country.php:60
+msgid "Croatia"
+msgstr ""
+
+#: inc/fields/list-country.php:61
+msgid "Cuba"
+msgstr ""
+
+#: inc/fields/list-country.php:62
+msgid "Cyprus"
+msgstr ""
+
+#: inc/fields/list-country.php:63
+msgid "Czech Republic"
+msgstr ""
+
+#: inc/fields/list-country.php:64
+msgid "Denmark"
+msgstr ""
+
+#: inc/fields/list-country.php:65
+msgid "Djibouti"
+msgstr ""
+
+#: inc/fields/list-country.php:66
+msgid "Dominica"
+msgstr ""
+
+#: inc/fields/list-country.php:67
+msgid "Dominican Republic"
+msgstr ""
+
+#: inc/fields/list-country.php:68
+msgid "Ecuador"
+msgstr ""
+
+#: inc/fields/list-country.php:69
+msgid "Egypt"
+msgstr ""
+
+#: inc/fields/list-country.php:70
+msgid "El Salvador"
+msgstr ""
+
+#: inc/fields/list-country.php:71
+msgid "Equatorial Guinea"
+msgstr ""
+
+#: inc/fields/list-country.php:72
+msgid "Eritrea"
+msgstr ""
+
+#: inc/fields/list-country.php:73
+msgid "Estonia"
+msgstr ""
+
+#: inc/fields/list-country.php:74
+msgid "Ethiopia"
+msgstr ""
+
+#: inc/fields/list-country.php:75
+msgid "Falkland Islands (Malvinas)"
+msgstr ""
+
+#: inc/fields/list-country.php:76
+msgid "Faroe Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:77
+msgid "Fiji"
+msgstr ""
+
+#: inc/fields/list-country.php:78
+msgid "Finland"
+msgstr ""
+
+#: inc/fields/list-country.php:79
+msgid "France"
+msgstr ""
+
+#: inc/fields/list-country.php:80
+msgid "French Guiana"
+msgstr ""
+
+#: inc/fields/list-country.php:81
+msgid "French Polynesia"
+msgstr ""
+
+#: inc/fields/list-country.php:82
+msgid "French Southern Territories"
+msgstr ""
+
+#: inc/fields/list-country.php:83
+msgid "Gabon"
+msgstr ""
+
+#: inc/fields/list-country.php:84
+msgid "Gambia"
+msgstr ""
+
+#: inc/fields/list-country.php:85
+msgid "Georgia"
+msgstr ""
+
+#: inc/fields/list-country.php:86
+msgid "Germany"
+msgstr ""
+
+#: inc/fields/list-country.php:87
+msgid "Ghana"
+msgstr ""
+
+#: inc/fields/list-country.php:88
+msgid "Gibraltar"
+msgstr ""
+
+#: inc/fields/list-country.php:89
+msgid "Greece"
+msgstr ""
+
+#: inc/fields/list-country.php:90
+msgid "Greenland"
+msgstr ""
+
+#: inc/fields/list-country.php:91
+msgid "Grenada"
+msgstr ""
+
+#: inc/fields/list-country.php:92
+msgid "Guadeloupe"
+msgstr ""
+
+#: inc/fields/list-country.php:93
+msgid "Guam"
+msgstr ""
+
+#: inc/fields/list-country.php:94
+msgid "Guatemala"
+msgstr ""
+
+#: inc/fields/list-country.php:95
+msgid "Guernsey"
+msgstr ""
+
+#: inc/fields/list-country.php:96
+msgid "Guinea"
+msgstr ""
+
+#: inc/fields/list-country.php:97
+msgid "Guinea-Bissau"
+msgstr ""
+
+#: inc/fields/list-country.php:98
+msgid "Guyana"
+msgstr ""
+
+#: inc/fields/list-country.php:99
+msgid "Haiti"
+msgstr ""
+
+#: inc/fields/list-country.php:100
+msgid "Heard Island & Mcdonald Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:101
+msgid "Holy See (Vatican City State)"
+msgstr ""
+
+#: inc/fields/list-country.php:102
+msgid "Honduras"
+msgstr ""
+
+#: inc/fields/list-country.php:103
+msgid "Hong Kong"
+msgstr ""
+
+#: inc/fields/list-country.php:104
+msgid "Hungary"
+msgstr ""
+
+#: inc/fields/list-country.php:105
+msgid "Iceland"
+msgstr ""
+
+#: inc/fields/list-country.php:106
+msgid "India"
+msgstr ""
+
+#: inc/fields/list-country.php:107
+msgid "Indonesia"
+msgstr ""
+
+#: inc/fields/list-country.php:108
+msgid "Iran, Islamic Republic Of"
+msgstr ""
+
+#: inc/fields/list-country.php:109
+msgid "Iraq"
+msgstr ""
+
+#: inc/fields/list-country.php:110
+msgid "Ireland"
+msgstr ""
+
+#: inc/fields/list-country.php:111
+msgid "Isle Of Man"
+msgstr ""
+
+#: inc/fields/list-country.php:112
+msgid "Israel"
+msgstr ""
+
+#: inc/fields/list-country.php:113
+msgid "Italy"
+msgstr ""
+
+#: inc/fields/list-country.php:114
+msgid "Jamaica"
+msgstr ""
+
+#: inc/fields/list-country.php:115
+msgid "Japan"
+msgstr ""
+
+#: inc/fields/list-country.php:116
+msgid "Jersey"
+msgstr ""
+
+#: inc/fields/list-country.php:117
+msgid "Jordan"
+msgstr ""
+
+#: inc/fields/list-country.php:118
+msgid "Kazakhstan"
+msgstr ""
+
+#: inc/fields/list-country.php:119
+msgid "Kenya"
+msgstr ""
+
+#: inc/fields/list-country.php:120
+msgid "Kiribati"
+msgstr ""
+
+#: inc/fields/list-country.php:121
+msgid "Korea"
+msgstr ""
+
+#: inc/fields/list-country.php:122
+msgid "Kuwait"
+msgstr ""
+
+#: inc/fields/list-country.php:123
+msgid "Kyrgyzstan"
+msgstr ""
+
+#: inc/fields/list-country.php:124
+msgid "Lao People's Democratic Republic"
+msgstr ""
+
+#: inc/fields/list-country.php:125
+msgid "Latvia"
+msgstr ""
+
+#: inc/fields/list-country.php:126
+msgid "Lebanon"
+msgstr ""
+
+#: inc/fields/list-country.php:127
+msgid "Lesotho"
+msgstr ""
+
+#: inc/fields/list-country.php:128
+msgid "Liberia"
+msgstr ""
+
+#: inc/fields/list-country.php:129
+msgid "Libyan Arab Jamahiriya"
+msgstr ""
+
+#: inc/fields/list-country.php:130
+msgid "Liechtenstein"
+msgstr ""
+
+#: inc/fields/list-country.php:131
+msgid "Lithuania"
+msgstr ""
+
+#: inc/fields/list-country.php:132
+msgid "Luxembourg"
+msgstr ""
+
+#: inc/fields/list-country.php:133
+msgid "Macao"
+msgstr ""
+
+#: inc/fields/list-country.php:134
+msgid "Macedonia"
+msgstr ""
+
+#: inc/fields/list-country.php:135
+msgid "Madagascar"
+msgstr ""
+
+#: inc/fields/list-country.php:136
+msgid "Malawi"
+msgstr ""
+
+#: inc/fields/list-country.php:137
+msgid "Malaysia"
+msgstr ""
+
+#: inc/fields/list-country.php:138
+msgid "Maldives"
+msgstr ""
+
+#: inc/fields/list-country.php:139
+msgid "Mali"
+msgstr ""
+
+#: inc/fields/list-country.php:140
+msgid "Malta"
+msgstr ""
+
+#: inc/fields/list-country.php:141
+msgid "Marshall Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:142
+msgid "Martinique"
+msgstr ""
+
+#: inc/fields/list-country.php:143
+msgid "Mauritania"
+msgstr ""
+
+#: inc/fields/list-country.php:144
+msgid "Mauritius"
+msgstr ""
+
+#: inc/fields/list-country.php:145
+msgid "Mayotte"
+msgstr ""
+
+#: inc/fields/list-country.php:146
+msgid "Mexico"
+msgstr ""
+
+#: inc/fields/list-country.php:147
+msgid "Micronesia, Federated States Of"
+msgstr ""
+
+#: inc/fields/list-country.php:148
+msgid "Moldova"
+msgstr ""
+
+#: inc/fields/list-country.php:149
+msgid "Monaco"
+msgstr ""
+
+#: inc/fields/list-country.php:150
+msgid "Mongolia"
+msgstr ""
+
+#: inc/fields/list-country.php:151
+msgid "Montenegro"
+msgstr ""
+
+#: inc/fields/list-country.php:152
+msgid "Montserrat"
+msgstr ""
+
+#: inc/fields/list-country.php:153
+msgid "Morocco"
+msgstr ""
+
+#: inc/fields/list-country.php:154
+msgid "Mozambique"
+msgstr ""
+
+#: inc/fields/list-country.php:155
+msgid "Myanmar"
+msgstr ""
+
+#: inc/fields/list-country.php:156
+msgid "Namibia"
+msgstr ""
+
+#: inc/fields/list-country.php:157
+msgid "Nauru"
+msgstr ""
+
+#: inc/fields/list-country.php:158
+msgid "Nepal"
+msgstr ""
+
+#: inc/fields/list-country.php:159
+msgid "Netherlands"
+msgstr ""
+
+#: inc/fields/list-country.php:160
+msgid "Netherlands Antilles"
+msgstr ""
+
+#: inc/fields/list-country.php:161
+msgid "New Caledonia"
+msgstr ""
+
+#: inc/fields/list-country.php:162
+msgid "New Zealand"
+msgstr ""
+
+#: inc/fields/list-country.php:163
+msgid "Nicaragua"
+msgstr ""
+
+#: inc/fields/list-country.php:164
+msgid "Niger"
+msgstr ""
+
+#: inc/fields/list-country.php:165
+msgid "Nigeria"
+msgstr ""
+
+#: inc/fields/list-country.php:166
+msgid "Niue"
+msgstr ""
+
+#: inc/fields/list-country.php:167
+msgid "Norfolk Island"
+msgstr ""
+
+#: inc/fields/list-country.php:168
+msgid "Northern Mariana Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:169
+msgid "Norway"
+msgstr ""
+
+#: inc/fields/list-country.php:170
+msgid "Oman"
+msgstr ""
+
+#: inc/fields/list-country.php:171
+msgid "Pakistan"
+msgstr ""
+
+#: inc/fields/list-country.php:172
+msgid "Palau"
+msgstr ""
+
+#: inc/fields/list-country.php:173
+msgid "Palestinian Territory, Occupied"
+msgstr ""
+
+#: inc/fields/list-country.php:174
+msgid "Panama"
+msgstr ""
+
+#: inc/fields/list-country.php:175
+msgid "Papua New Guinea"
+msgstr ""
+
+#: inc/fields/list-country.php:176
+msgid "Paraguay"
+msgstr ""
+
+#: inc/fields/list-country.php:177
+msgid "Peru"
+msgstr ""
+
+#: inc/fields/list-country.php:178
+msgid "Philippines"
+msgstr ""
+
+#: inc/fields/list-country.php:179
+msgid "Pitcairn"
+msgstr ""
+
+#: inc/fields/list-country.php:180
+msgid "Poland"
+msgstr ""
+
+#: inc/fields/list-country.php:181
+msgid "Portugal"
+msgstr ""
+
+#: inc/fields/list-country.php:182
+msgid "Puerto Rico"
+msgstr ""
+
+#: inc/fields/list-country.php:183
+msgid "Qatar"
+msgstr ""
+
+#: inc/fields/list-country.php:184
+msgid "Reunion"
+msgstr ""
+
+#: inc/fields/list-country.php:185
+msgid "Romania"
+msgstr ""
+
+#: inc/fields/list-country.php:186
+msgid "Russian Federation"
+msgstr ""
+
+#: inc/fields/list-country.php:187
+msgid "Rwanda"
+msgstr ""
+
+#: inc/fields/list-country.php:188
+msgid "Saint Barthelemy"
+msgstr ""
+
+#: inc/fields/list-country.php:189
+msgid "Saint Helena"
+msgstr ""
+
+#: inc/fields/list-country.php:190
+msgid "Saint Kitts And Nevis"
+msgstr ""
+
+#: inc/fields/list-country.php:191
+msgid "Saint Lucia"
+msgstr ""
+
+#: inc/fields/list-country.php:192
+msgid "Saint Martin"
+msgstr ""
+
+#: inc/fields/list-country.php:193
+msgid "Saint Pierre And Miquelon"
+msgstr ""
+
+#: inc/fields/list-country.php:194
+msgid "Saint Vincent And Grenadines"
+msgstr ""
+
+#: inc/fields/list-country.php:195
+msgid "Samoa"
+msgstr ""
+
+#: inc/fields/list-country.php:196
+msgid "San Marino"
+msgstr ""
+
+#: inc/fields/list-country.php:197
+msgid "Sao Tome And Principe"
+msgstr ""
+
+#: inc/fields/list-country.php:198
+msgid "Saudi Arabia"
+msgstr ""
+
+#: inc/fields/list-country.php:199
+msgid "Senegal"
+msgstr ""
+
+#: inc/fields/list-country.php:200
+msgid "Serbia"
+msgstr ""
+
+#: inc/fields/list-country.php:201
+msgid "Seychelles"
+msgstr ""
+
+#: inc/fields/list-country.php:202
+msgid "Sierra Leone"
+msgstr ""
+
+#: inc/fields/list-country.php:203
+msgid "Singapore"
+msgstr ""
+
+#: inc/fields/list-country.php:204
+msgid "Slovakia"
+msgstr ""
+
+#: inc/fields/list-country.php:205
+msgid "Slovenia"
+msgstr ""
+
+#: inc/fields/list-country.php:206
+msgid "Solomon Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:207
+msgid "Somalia"
+msgstr ""
+
+#: inc/fields/list-country.php:208
+msgid "South Africa"
+msgstr ""
+
+#: inc/fields/list-country.php:209
+msgid "South Georgia And Sandwich Isl."
+msgstr ""
+
+#: inc/fields/list-country.php:210
+msgid "Spain"
+msgstr ""
+
+#: inc/fields/list-country.php:211
+msgid "Sri Lanka"
+msgstr ""
+
+#: inc/fields/list-country.php:212
+msgid "Sudan"
+msgstr ""
+
+#: inc/fields/list-country.php:213
+msgid "Suriname"
+msgstr ""
+
+#: inc/fields/list-country.php:214
+msgid "Svalbard And Jan Mayen"
+msgstr ""
+
+#: inc/fields/list-country.php:215
+msgid "Swaziland"
+msgstr ""
+
+#: inc/fields/list-country.php:216
+msgid "Sweden"
+msgstr ""
+
+#: inc/fields/list-country.php:217
+msgid "Switzerland"
+msgstr ""
+
+#: inc/fields/list-country.php:218
+msgid "Syrian Arab Republic"
+msgstr ""
+
+#: inc/fields/list-country.php:219
+msgid "Taiwan"
+msgstr ""
+
+#: inc/fields/list-country.php:220
+msgid "Tajikistan"
+msgstr ""
+
+#: inc/fields/list-country.php:221
+msgid "Tanzania"
+msgstr ""
+
+#: inc/fields/list-country.php:222
+msgid "Thailand"
+msgstr ""
+
+#: inc/fields/list-country.php:223
+msgid "Timor-Leste"
+msgstr ""
+
+#: inc/fields/list-country.php:224
+msgid "Togo"
+msgstr ""
+
+#: inc/fields/list-country.php:225
+msgid "Tokelau"
+msgstr ""
+
+#: inc/fields/list-country.php:226
+msgid "Tonga"
+msgstr ""
+
+#: inc/fields/list-country.php:227
+msgid "Trinidad And Tobago"
+msgstr ""
+
+#: inc/fields/list-country.php:228
+msgid "Tunisia"
+msgstr ""
+
+#: inc/fields/list-country.php:229
+msgid "Turkey"
+msgstr ""
+
+#: inc/fields/list-country.php:230
+msgid "Turkmenistan"
+msgstr ""
+
+#: inc/fields/list-country.php:231
+msgid "Turks And Caicos Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:232
+msgid "Tuvalu"
+msgstr ""
+
+#: inc/fields/list-country.php:233
+msgid "Uganda"
+msgstr ""
+
+#: inc/fields/list-country.php:234
+msgid "Ukraine"
+msgstr ""
+
+#: inc/fields/list-country.php:235
+msgid "United Arab Emirates"
+msgstr ""
+
+#: inc/fields/list-country.php:236
+msgid "United Kingdom"
+msgstr ""
+
+#: inc/fields/list-country.php:237
+msgid "United States"
+msgstr ""
+
+#: inc/fields/list-country.php:238
+msgid "United States Outlying Islands"
+msgstr ""
+
+#: inc/fields/list-country.php:239
+msgid "Uruguay"
+msgstr ""
+
+#: inc/fields/list-country.php:240
+msgid "Uzbekistan"
+msgstr ""
+
+#: inc/fields/list-country.php:241
+msgid "Vanuatu"
+msgstr ""
+
+#: inc/fields/list-country.php:242
+msgid "Venezuela"
+msgstr ""
+
+#: inc/fields/list-country.php:243
+msgid "Viet Nam"
+msgstr ""
+
+#: inc/fields/list-country.php:244
+msgid "Virgin Islands, British"
+msgstr ""
+
+#: inc/fields/list-country.php:245
+msgid "Virgin Islands, U.S."
+msgstr ""
+
+#: inc/fields/list-country.php:246
+msgid "Wallis And Futuna"
+msgstr ""
+
+#: inc/fields/list-country.php:247
+msgid "Western Sahara"
+msgstr ""
+
+#: inc/fields/list-country.php:248
+msgid "Yemen"
+msgstr ""
+
+#: inc/fields/list-country.php:249
+msgid "Zambia"
+msgstr ""
+
+#: inc/fields/list-country.php:250
+msgid "Zimbabwe"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:36
+msgid "Unknown upload field ID"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:40
+msgid "Nonce error"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:44
+msgid "Form ID missing"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:48
+msgid "File data missing"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:55
+msgid "Missing upload field configuration"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:59
+msgid "File type not allowed"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:63
+msgid "File is too big"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:108
+msgid "Couldn't insert temporary file to WP database"
+msgstr ""
+
+#. translators: %s is the invalid URL parameter value
+#: inc/files/class-encrypted-files.php:126
+#, php-format
+msgid "Invalid file ID: %s"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:130 inc/files/class-file.php:179
+msgid "You don't have the proper permission to view this file."
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:232
+msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:233
+msgid ""
+"The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in "
+"the HTML form"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:234
+msgid "The uploaded file was only partially uploaded"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:235
+msgid "No file was uploaded"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:236
+msgid "Missing a temporary folder"
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:237
+msgid "Failed to write file to disk."
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:238
+msgid "A PHP extension stopped the file upload."
+msgstr ""
+
+#: inc/files/class-encrypted-files.php:241
+msgid "Unknown upload error"
+msgstr ""
+
+#: inc/files/class-file.php:190
+msgid "File contents not found"
+msgstr ""
+
+#: inc/files/class-file.php:199 inc/files/class-file.php:221
+msgid "File not found"
+msgstr ""
+
+#: inc/files/class-file.php:203 inc/files/class-file.php:225
+msgid "File type not found"
+msgstr ""
+
+#: inc/files/class-file.php:207 inc/files/class-file.php:229
+msgid "File title not found"
+msgstr ""
+
+#: inc/forms/class-appended-form.php:28
+msgid "Append A Form"
+msgstr ""
+
+#: inc/forms/class-form.php:166
+msgid "Thank You! We have received your form submission."
+msgstr ""
+
+#: inc/forms/class-form.php:170
+msgid "We are sorry, the form submission failed. Please try again."
+msgstr ""
+
+#: inc/forms/class-forms.php:93
+msgid "remove file"
+msgstr ""
+
+#: inc/forms/class-forms.php:95
+msgid "uploading..."
+msgstr ""
+
+#: inc/forms/class-forms.php:96
+msgid "File selected"
+msgstr ""
+
+#: inc/forms/class-forms.php:97
+msgid "This field's value is invalid!"
+msgstr ""
+
+#: inc/forms/class-forms.php:98
+msgid "This field is required!"
+msgstr ""
+
+#: inc/forms/class-forms.php:99
+msgid "Please enter a valid email address!"
+msgstr ""
+
+#: inc/forms/class-forms.php:100
+msgid "Please enter date in valid format!"
+msgstr ""
+
+#: inc/forms/class-forms.php:297
+msgid "No form ID provided on submission"
+msgstr ""
+
+#: inc/submissions/class-submission.php:173
+msgid "Set object's sub_id field before calling this method"
+msgstr ""
+
+#: inc/submissions/class-submission.php:177
+msgid "Deletion failed!"
+msgstr ""
+
+#: inc/submissions/class-submission.php:200
+msgid "Submission data array must contain proper form_id"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Capgemini Proper Forms"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
+msgid "https://capgemini.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Simple, reliable forms for Capgemini on VIP Go"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Lech Dulian (Capgemini MACS PL)"
+msgstr ""

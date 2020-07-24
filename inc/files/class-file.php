@@ -1,8 +1,8 @@
 <?php
-namespace MACS_Forms\Files;
+namespace Proper_Forms\Files;
 
-use MACS_Forms;
-use MACS_Forms\Files\Encrypted_Files as Encrypted_Files;
+use Proper_Forms;
+use Proper_Forms\Files\Encrypted_Files as Encrypted_Files;
 
 class File {
 
@@ -75,7 +75,7 @@ class File {
 
 		$query = new \WP_Query(
 			[
-				'post_type'     => 'mf_file',
+				'post_type'     => 'pf_file',
 				'post_status'   => [ 'publish', 'draft' ],
 				'post__in'      => [ $this->file_id ],
 				'no_found_rows' => true,
@@ -96,7 +96,7 @@ class File {
 			$this->sub_id   = get_post_meta( $this->file_id, 'sub_id', true );
 			$this->url      = add_query_arg(
 				[
-					'action' => 'mf_decode_file',
+					'action' => 'pf_decode_file',
 					'id'     => $this->file_id,
 				],
 				admin_url( 'admin-ajax.php' )
@@ -131,7 +131,7 @@ class File {
 				'post_content' => $file_data['content'],
 				'post_title'   => $file_data['temp_title'],
 				'post_status'  => 'draft',
-				'post_type'    => 'mf_file',
+				'post_type'    => 'pf_file',
 				'meta_input'   => [
 					'filetype' => $file_data['filetype'],
 					'filename' => $file_data['title'],
@@ -153,7 +153,7 @@ class File {
 		// Make sure file exists in WP
 		$file_post = get_post( $this->file_id );
 
-		if ( empty( $file_post ) || 'draft' !== $file_post->post_status || 'mf_file' !== $file_post->post_type ) {
+		if ( empty( $file_post ) || 'draft' !== $file_post->post_status || 'pf_file' !== $file_post->post_type ) {
 			return false;
 		}
 
@@ -175,8 +175,8 @@ class File {
 
 	protected function get_decrypted() {
 
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_die( esc_html_e( 'You don\'t have the proper permission to view this file.', 'wp-macs-forms' ) );
+		if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'read_pf_files' ) ) {
+			wp_die( esc_html_e( 'You don\'t have the proper permission to view this file.', 'proper-forms' ) );
 		}
 
 		if ( empty( $this->file_id ) ) {
@@ -187,7 +187,7 @@ class File {
 		$encrypted = $file_post->post_content;
 
 		if ( empty( $encrypted ) ) {
-			wp_die( esc_html_e( 'File contents not found', 'wp-macs-forms' ) );
+			wp_die( esc_html_e( 'File contents not found', 'proper-forms' ) );
 		}
 
 		return openssl_decrypt( $encrypted, 'AES128', Encrypted_Files::CIPHER_KEY );
@@ -196,15 +196,15 @@ class File {
 	public function output() {
 
 		if ( empty( $this->file_id ) ) {
-			wp_die( esc_html_e( 'File not found', 'wp-macs-forms' ) );
+			wp_die( esc_html_e( 'File not found', 'proper-forms' ) );
 		}
 
 		if ( empty( $this->filetype ) ) {
-			wp_die( esc_html_e( 'File type not found', 'wp-macs-forms' ) );
+			wp_die( esc_html_e( 'File type not found', 'proper-forms' ) );
 		}
 
 		if ( empty( $this->title ) ) {
-			wp_die( esc_html_e( 'File title not found', 'wp-macs-forms' ) );
+			wp_die( esc_html_e( 'File title not found', 'proper-forms' ) );
 		}
 
 		$decrypted = $this->get_decrypted();
@@ -218,15 +218,15 @@ class File {
 	public function download() {
 
 		if ( empty( $this->file_id ) ) {
-			wp_die( esc_html_e( 'File not found', 'wp-macs-forms' ) );
+			wp_die( esc_html_e( 'File not found', 'proper-forms' ) );
 		}
 
 		if ( empty( $this->filetype ) ) {
-			wp_die( esc_html_e( 'File type not found', 'wp-macs-forms' ) );
+			wp_die( esc_html_e( 'File type not found', 'proper-forms' ) );
 		}
 
 		if ( empty( $this->title ) ) {
-			wp_die( esc_html_e( 'File title not found', 'wp-macs-forms' ) );
+			wp_die( esc_html_e( 'File title not found', 'proper-forms' ) );
 		}
 
 		$decrypted = $this->get_decrypted();

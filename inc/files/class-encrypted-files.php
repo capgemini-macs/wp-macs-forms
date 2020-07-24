@@ -3,70 +3,64 @@
  * General Files controller
  */
 
-namespace MACS_Forms\Files;
+namespace Proper_Forms\Files;
 
-use MACS_Forms;
+use Proper_Forms;
 
 class Encrypted_Files {
 
 	/**
 	 * Cipher key for openssl encryption
 	 *
+	 * @var string
 	 */
-	private $cipher_key;
-
-
-	public function __construct() {
-		// Cipher key for openssl
-		$options = get_option( 'mf_settings' );
-		$this->cipher_key = $options['cipher_key'];
-	}
+	const CIPHER_KEY = 'q3s6v9y$B&E)H@McQfTjWnZr4u7w!z%C';
 
 	/**
 	 * Initialise the class and run hooks
 	 */
 	public function init() {
 		// AJAX callbacks
-		add_action( 'wp_ajax_mf_fileupload', [ $this, 'fileupload_ajax_callback' ] );
-		add_action( 'wp_ajax_nopriv_mf_fileupload', [ $this, 'fileupload_ajax_callback' ] );
-		add_action( 'wp_ajax_mf_decode_file', [ $this, 'mf_decode_file_callback' ] );
+		add_action( 'wp_ajax_pf_fileupload', [ $this, 'fileupload_ajax_callback' ] );
+		add_action( 'wp_ajax_nopriv_pf_fileupload', [ $this, 'fileupload_ajax_callback' ] );
+		add_action( 'wp_ajax_pf_decode_file', [ $this, 'pf_decode_file_callback' ] );
 	}
 
 	protected function validate_upload_data() {
 		$form_id    = filter_input( INPUT_POST, 'form_id', FILTER_SANITIZE_STRING );
 		$field_id   = filter_input( INPUT_POST, 'field_id', FILTER_SANITIZE_STRING );
-		$file       = array_shift( $_FILES ); // phpcs:ignore
+		$file       = array_shift( $_FILES ); // we're accepting only one file per field
 		$error_code = isset( $file['error'] ) ? $file['error'] : 'unknown';
 
 		if ( empty( $field_id ) ) {
-			return new \WP_Error( 'file_upload_error', __( 'Unknown upload field ID', 'wp-macs-forms' ) );
+			return new \WP_Error( 'file_upload_error', __( 'Unknown upload field ID', 'proper-forms' ) );
 		}
 
-		if ( false === check_ajax_referer( 'mf-fileupload-' . $field_id, 'nonce', false ) ) {
-			return new \WP_Error( 'file_upload_error', __( 'Nonce error', 'wp-macs-forms' ) );
+		if ( false === check_ajax_referer( 'pf-fileupload-' . $field_id, 'nonce', false ) ) {
+			return new \WP_Error( 'file_upload_error', __( 'Nonce error', 'proper-forms' ) );
 		}
 
 		if ( empty( $form_id ) ) {
-			return new \WP_Error( 'file_upload_error', __( 'Form ID missing', 'wp-macs-forms' ) );
+			return new \WP_Error( 'file_upload_error', __( 'Form ID missing', 'proper-forms' ) );
 		}
 
 		if ( empty( $file['name'] ) || empty( $file['type'] ) || empty( $file['tmp_name'] ) ) {
-			return new \WP_Error( 'file_upload_error', __( 'File data missing', 'wp-macs-forms' ) );
+			return new \WP_Error( 'file_upload_error', __( 'File data missing', 'proper-forms' ) );
 		}
 
 		// retrieve field configuration from form settings
 		$upload_field_config = $this->get_upload_field( $form_id, $field_id );
 
 		if ( empty( $upload_field_config ) ) {
-			return new \WP_Error( 'file_upload_error', __( 'Missing upload field configuration', 'wp-macs-forms' ) );
+			return new \WP_Error( 'file_upload_error', __( 'Missing upload field configuration', 'proper-forms' ) );
 		}
 
 		if ( false === $this->check_allowed_filetype( $file['name'], $upload_field_config ) ) {
-			return new \WP_Error( 'file_upload_error', __( 'File type not allowed', 'wp-macs-forms' ) );
+			return new \WP_Error( 'file_upload_error', __( 'File type not allowed', 'proper-forms' ) );
 		}
 
 		if ( false === $this->check_allowed_filesize( $file['size'], $upload_field_config ) ) {
-			return new \WP_Error( 'file_upload_error', __( 'File is too big', 'wp-macs-forms' ) );
+			return new \WP_Error( 'file_upload_error', __( 'File is too big', 'proper-forms' ) );
 		}
 
 		if ( 0 !== $error_code ) {
@@ -94,10 +88,10 @@ class Encrypted_Files {
 		// Create new File object
 
 		$file      = $file_data['file'];
-		$contents  = file_get_contents( $file['tmp_name'] ); //phpcs:ignore
-		$encrypted = openssl_encrypt( $contents, 'AES128', $this->$cipher_key );
+		$contents  = file_get_contents( $file['tmp_name'] );
+		$encrypted = openssl_encrypt( $contents, 'AES128', self::CIPHER_KEY );
 
-		$file_post = MACS_Forms\Builder::get_instance()->make_file();
+		$file_post = Proper_Forms\Builder::get_instance()->make_file();
 		$file_id   = $file_post->insert(
 			[
 				'content'    => $encrypted,
@@ -111,7 +105,7 @@ class Encrypted_Files {
 		// Return results
 
 		if ( 0 === $file_id ) {
-			wp_send_json_error( __( 'Couldn\'t insert temporary file to WP database', 'wp-macs-forms' ) );
+			wp_send_json_error( __( 'Couldn\'t insert temporary file to WP database', 'proper-forms' ) );
 			wp_die();
 		}
 
@@ -124,19 +118,19 @@ class Encrypted_Files {
 		exit;
 	}
 
-	public function mf_decode_file_callback( $file_id ) {
+	public function pf_decode_file_callback( $file_id ) {
 		$file_id = filter_input( INPUT_GET, 'id', FILTER_VALIDATE_INT );
 
 		if ( empty( $file_id ) ) {
 			/* translators: %s is the invalid URL parameter value */
-			wp_die( sprintf( esc_html__( 'Invalid file ID: %s', 'wp-macs-forms' ), esc_html( filter_input( INPUT_GET, 'id', FILTER_VALIDATE_INT ) ) ) );
+			wp_die( sprintf( esc_html__( 'Invalid file ID: %s', 'proper-forms' ), esc_html( filter_input( INPUT_GET, 'id', FILTER_VALIDATE_INT ) ) ) );
 		}
 
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_die( esc_html__( 'You don\'t have the proper permission to view this file.', 'wp-macs-forms' ) );
+		if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'read_pf_files' ) ) {
+			wp_die( esc_html__( 'You don\'t have the proper permission to view this file.', 'proper-forms' ) );
 		}
 
-		$file = MACS_Forms\Builder::get_instance()->make_file( $file_id );
+		$file = Proper_Forms\Builder::get_instance()->make_file( $file_id );
 		$file->output();
 	}
 
@@ -212,7 +206,7 @@ class Encrypted_Files {
 	 * @return array
 	 */
 	protected function get_upload_field( $form_id, $field_id ) {
-		$form         = MACS_Forms\Builder::get_instance()->make_form( $form_id );
+		$form         = Proper_Forms\Builder::get_instance()->make_form( $form_id );
 		$upload_field = [];
 
 		if ( ! empty( $form->fields ) ) {
@@ -235,15 +229,15 @@ class Encrypted_Files {
 	 */
 	protected function get_upload_error_message( $error_code ) {
 		$php_upload_errors = [
-			1 => __( 'The uploaded file exceeds the upload_max_filesize directive in php.ini', 'wp-macs-forms' ),
-			2 => __( 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form', 'wp-macs-forms' ),
-			3 => __( 'The uploaded file was only partially uploaded', 'wp-macs-forms' ),
-			4 => __( 'No file was uploaded', 'wp-macs-forms' ),
-			6 => __( 'Missing a temporary folder', 'wp-macs-forms' ),
-			7 => __( 'Failed to write file to disk.', 'wp-macs-forms' ),
-			8 => __( 'A PHP extension stopped the file upload.', 'wp-macs-forms' ),
+			1 => __( 'The uploaded file exceeds the upload_max_filesize directive in php.ini', 'proper-forms' ),
+			2 => __( 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form', 'proper-forms' ),
+			3 => __( 'The uploaded file was only partially uploaded', 'proper-forms' ),
+			4 => __( 'No file was uploaded', 'proper-forms' ),
+			6 => __( 'Missing a temporary folder', 'proper-forms' ),
+			7 => __( 'Failed to write file to disk.', 'proper-forms' ),
+			8 => __( 'A PHP extension stopped the file upload.', 'proper-forms' ),
 		];
 
-		return isset( $php_upload_errors[ $error_code ] ) ? $php_upload_errors[ $error_code ] : __( 'Unknown upload error', 'wp-macs-forms' );
+		return isset( $php_upload_errors[ $error_code ] ) ? $php_upload_errors[ $error_code ] : __( 'Unknown upload error', 'proper-forms' );
 	}
 }

@@ -1,8 +1,8 @@
 <?php
-namespace MACS_Forms\Submissions;
+namespace Proper_Forms\Submissions;
 
-use MACS_Forms;
-use MACS_Forms\Forms\Form as Form;
+use Proper_Forms;
+use Proper_Forms\Forms\Form as Form;
 
 class Submission {
 
@@ -124,11 +124,11 @@ class Submission {
 			return $fields;
 		}
 
-		$form = MACS_Forms\Builder::get_instance()->make_form( $this->form_id );
+		$form = Proper_Forms\Builder::get_instance()->make_form( $this->form_id );
 
 		if ( ! empty( $form->fields ) ) {
 			foreach ( $form->fields as $field ) {
-				$field->saved_value   = get_post_meta( $this->sub_id, $field->id, true );
+				$field->saved_value = get_post_meta( $this->sub_id, $field->id, true );
 				$fields[ $field->id ] = $field;
 			}
 		}
@@ -151,9 +151,9 @@ class Submission {
 		}
 
 		$submission_post = [
-			'post_type'   => 'mf_sub',
+			'post_type'   => 'pf_sub',
 			'post_status' => 'publish',
-			'post_title'  => sprintf( 'mf_submission_%1$s_%2$d', $data['form_id'], time() ),
+			'post_title'  => sprintf( 'pf_submission_%1$s_%2$d', $data['form_id'], time() ),
 			'meta_input'  => $data,
 		];
 
@@ -170,11 +170,11 @@ class Submission {
 	public function delete() {
 
 		if ( ! $this->sub_id ) {
-			return new \WP_Error( 'no_sub_id', __( 'Set object\'s sub_id field before calling this method', 'macs_forms' ) );
+			return new \WP_Error( 'no_sub_id', __( 'Set object\'s sub_id field before calling this method', 'proper-forms' ) );
 		}
 
 		if ( false === wp_delete_post( $this->sub_id, true ) ) {
-			return new \WP_Error( 'deletion_failed', __( 'Deletion failed!', 'macs_forms' ) );
+			return new \WP_Error( 'deletion_failed', __( 'Deletion failed!', 'proper-forms' ) );
 		}
 
 		return true;
@@ -197,7 +197,7 @@ class Submission {
 
 		// [form_id] field is required
 		if ( empty( $input_data['form_id'] ) || ! absint( $input_data['form_id'] ) ) {
-			$this->validation_errors[] = new \WP_Error( 'missing_form_id', __( 'Submission data array must contain proper form_id', 'macs_forms' ) );
+			$this->validation_errors[] = new \WP_Error( 'missing_form_id', __( 'Submission data array must contain proper form_id', 'proper-forms' ) );
 		}
 
 		// Set related form ID

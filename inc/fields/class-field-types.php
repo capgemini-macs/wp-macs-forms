@@ -3,7 +3,7 @@
  * Collection class for form fields
  */
 
-namespace MACS_Forms\Fields;
+namespace Proper_Forms\Fields;
 
 class Field_Types {
 
@@ -22,7 +22,7 @@ class Field_Types {
 	 * Set default fields
 	 */
 	private function set_default_fields() {
-		$this->fields = apply_filters( 'mf_active_field_types', $this->fields );
+		$this->fields = apply_filters( 'pf_active_field_types', $this->fields );
 	}
 
 	/**

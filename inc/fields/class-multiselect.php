@@ -2,28 +2,28 @@
 
 namespace Proper_Forms\Fields;
 
-class Select extends Multi_Field {
+class Multiselect extends Multi_Field {
 
 	/**
 	 * Field type
 	 *
 	 * @var string
 	 */
-	public $type = 'select';
+	public $type = 'multiselect';
 
 	/**
 	 * Human readable name of the field type
 	 *
 	 * @var string
 	 */
-	public $name = 'Select Field';
+	public $name = 'Multiselect Field';
 
 	/**
 	 * field icon from dashicon set
 	 *
 	 * @var string
 	 */
-	public $icon = 'dashicons-list-view';
+	public $icon = 'dashicons-excerpt-view';
 
 	/**
 	 * Render the field on front-end
@@ -31,12 +31,12 @@ class Select extends Multi_Field {
 	public function render_field() {
 
 		?>
-			<div class="pf_field pf_field--select <?php echo esc_attr( $this->get_render_required_class() ); ?>" data-validate="select">
-				<label for="<?php echo esc_attr( $this->id ); ?>" ><?php echo esc_html( $this->label ); ?>
+			<div class="pf_field pf_field--multiselect <?php echo esc_attr( $this->get_render_required_class() ); ?>" data-validate="multiselect" name="<?php echo esc_attr( $this->id ); ?>">
+				<label for="<?php echo esc_attr( $this->id ); ?>"><?php echo esc_html( $this->label ); ?>
 					<?php echo wp_kses_post( $this->get_render_required_symbol() ); ?>
 				</label>
 
-			<select id="<?php echo esc_attr( $this->id ); ?>" class="pf_field__input empty" name="<?php echo esc_attr( $this->id ); ?>" <?php echo esc_attr( $this->get_render_required() ); ?>>
+				<select id="<?php echo esc_attr( $this->id ); ?>" class="pf_field__input empty" name="<?php echo esc_attr( $this->id ); ?>[]" <?php echo esc_attr( $this->get_render_required() ); ?> multiple="multiple">
 
 					<?php if ( ! in_array( '', $this->options_to_array( $this->options ), true ) ) { ?>
 						<option value=""> </option>
@@ -120,7 +120,13 @@ class Select extends Multi_Field {
 			return new \WP_Error( 'missing_required_field', __( 'Required Field is missing', 'proper-forms' ), $this->name );
 		}
 
-		return sanitize_text_field( $input );
+		$output = array_map(
+			function( $item ) {
+				return sanitize_text_field( $item );
+			},
+			(array) $input
+		);
 
+		return $output;
 	}
 }

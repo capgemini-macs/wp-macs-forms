@@ -3,7 +3,7 @@
  * Abstract class for Form Builder fields that support multiple options
  */
 
-namespace MACS_Forms\Fields;
+namespace Proper_Forms\Fields;
 
 abstract class Multi_Field extends Field {
 
@@ -94,13 +94,13 @@ abstract class Multi_Field extends Field {
 				ob_start();
 				?>
 				<label for="<?php echo esc_attr( $args['name'] ); ?>">
-					<?php echo esc_html__( $args['label'] ); //phpcs:ignore ?>
+					<?php echo esc_html__( $args['label'] ); ?>
 				</label>
 
-				<table class="mf_key_value_table">
+				<table class="pf_key_value_table">
 					<thead>
-						<th><?php esc_html_e( 'Value', 'wp-macs-forms' ); ?></th>
-						<th><?php esc_html_e( 'Label', 'wp-macs-forms' ); ?></th>
+						<th><?php esc_html_e( 'Value', 'proper-forms' ); ?></th>
+						<th><?php esc_html_e( 'Label', 'proper-forms' ); ?></th>
 						<th></th>
 					</thead>
 					<tbody>
@@ -108,7 +108,7 @@ abstract class Multi_Field extends Field {
 						<tr>
 							<td><input type="text"  /></td>
 							<td><input type="text" /></td>
-							<td><button class="mf_delete_row" aria-label="<?php echo esc_attr__( 'Delete this row', 'wp-macs-forms' ); ?>"><span class="dashicons dashicons-no"></span></button></td>
+							<td><button class="pf_delete_row" aria-label="<?php echo esc_attr__( 'Delete this row', 'proper-forms' ); ?>"><span class="dashicons dashicons-no"></span></button></td>
 						</tr>
 							<?php
 							else :
@@ -117,14 +117,14 @@ abstract class Multi_Field extends Field {
 									<tr>
 										<td><input type="text" value="<?php echo esc_attr( $value ); ?>" /></td>
 										<td><input type="text" value="<?php echo esc_attr( $label ); ?>" /></td>
-										<td><button class="mf_delete_row" aria-label="<?php echo esc_attr__( 'Delete this row', 'wp-macs-forms' ); ?>"><span class="dashicons dashicons-no"></span></button></td>
+										<td><button class="pf_delete_row" aria-label="<?php echo esc_attr__( 'Delete this row', 'proper-forms' ); ?>"><span class="dashicons dashicons-no"></span></button></td>
 									</tr>
 								<?php endforeach; ?>
 							<?php endif; ?>
 					</tbody>
 				</table>
 
-				<button class="mf_table_add_row" aria-label="<?php echo esc_attr__( 'Delete this row', 'wp-macs-forms' ); ?>"><span class="dashicons dashicons-plus"></span> <?php echo esc_html( 'Add option', 'wp-macs-forms' ); ?></button>
+				<button class="pf_table_add_row" aria-label="<?php echo esc_attr__( 'Delete this row', 'proper-forms' ); ?>"><span class="dashicons dashicons-plus"></span> <?php echo esc_html( 'Add option', 'proper-forms' ); ?></button>
 
 				<input name="<?php echo esc_attr( $args['name'] ); ?>" type="hidden" value="<?php echo esc_attr( $args['value'] ); ?>" />
 
@@ -132,7 +132,7 @@ abstract class Multi_Field extends Field {
 				$input = ob_get_clean();
 				break;
 
-			case 'checkbox':
+				case 'checkbox':
 					$input = sprintf(
 						'<label for="%1$s">%2$s</label><br /><input id="%1$s" class="%3$s" name="%1$s" type="checkbox" value="1" %4$s />',
 						esc_attr( $args['name'] ),
@@ -142,19 +142,19 @@ abstract class Multi_Field extends Field {
 					);
 				break;
 
-			case 'textarea':
+				case 'textarea':
 					$input = sprintf(
 						'<label for="%1$s">%2$s</label><br /><textarea id="%1$s" rows="3" name="%1$s" type="text">%3$s</textarea>',
 						esc_attr( $args['name'] ),
 						esc_html( $args['label'] ),
-						esc_html( str_replace( 'rn', "\n", $args['value'] ) )
+						esc_html( str_replace( "rn", "\n", $args['value'] ) )
 					);
 
 				break;
 
 		}
 		?>
-		<div class="mf-cell-<?php echo esc_attr( $args['col'] ); ?> mf_setting"><?php echo $input; // phpcs:ignore WordPress.Security.EscapeOutput -- Escaped early ?></div>
+		<div class="pf-cell-<?php echo esc_attr( $args['col'] ); ?> pf_setting"><?php echo $input; // phpcs:ignore WordPress.Security.EscapeOutput -- Escaped early ?></div>
 		<?php
 	}
 
@@ -177,6 +177,10 @@ abstract class Multi_Field extends Field {
 			$vals = explode( '|', $option );
 
 			if ( 2 !== count( $vals ) ) {
+				continue;
+			}
+
+			if ( empty( $vals[1] ) || empty( $vals[0] ) ) {
 				continue;
 			}
 

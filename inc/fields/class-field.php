@@ -3,7 +3,7 @@
  * Abstract class for Form Builder fields
  */
 
-namespace MACS_Forms\Fields;
+namespace Proper_Forms\Fields;
 
 abstract class Field {
 
@@ -36,7 +36,7 @@ abstract class Field {
 	public $id = 0;
 
 	/**
-	 * Datasource ID (mf_form post type ID)
+	 * Datasource ID (pf_form post type ID)
 	 *
 	 * @var int
 	 */
@@ -134,27 +134,27 @@ abstract class Field {
 	 */
 	public function render_picker_item() {
 		?>
-			<li class="mf_list__item mf_picker_<?php echo esc_attr( $this->type ); ?> draggable" data-type="<?php echo esc_attr( $this->type ); ?>">
-				<div class="mf_list__inner">
-						<div class="mf__options">
+			<li class="pf_list__item pf_picker_<?php echo esc_attr( $this->type ); ?> draggable" data-type="<?php echo esc_attr( $this->type ); ?>">
+				<div class="pf_list__inner">
+						<div class="pf__options">
 
-							<?php do_action( 'mf_before_config_buttons', [ $this->type, $this->id ] ); ?>
+							<?php do_action( 'pf_before_config_buttons', [ $this->type, $this->id ] ); ?>
 
-							<button class="mf_btn mf_btn--config" aria-label="<?php esc_attr_e( 'Show field settings window', 'wp-macs-forms' ); ?>">
+							<button class="pf_btn pf_btn--config" aria-label="<?php esc_attr_e( 'Show field settings window', 'proper-forms' ); ?>">
 								<span class="dashicons dashicons-edit" aria-hidden="true"></span>
 							</button>
-							<button class="mf_btn mf_btn--remove" aria-label="<?php esc_attr_e( 'Remove field from form', 'wp-macs-forms' ); ?>">
+							<button class="pf_btn pf_btn--remove" aria-label="<?php esc_attr_e( 'Remove field from form', 'proper-forms' ); ?>">
 								<span class="dashicons dashicons-trash" aria-hidden="true"></span>
 							</button>
 
-							<?php do_action( 'mf_after_config_buttons', [ $this->type, $this->id ] ); ?>
+							<?php do_action( 'pf_after_config_buttons', [ $this->type, $this->id ] ); ?>
 
 						</div>
 					<h3>
 						<span class="dashicons <?php echo esc_attr( $this->icon ); ?>"></span>
-						<span class="mf_list__title"><?php echo esc_html( $this->name ); ?></span>
+						<span class="pf_list__title"><?php echo esc_html( $this->name ); ?></span>
 					</h3>
-						<div class="mf_list__config_panel">
+						<div class="pf_list__config_panel">
 							<?php
 								$this->render_field_settings( null, null );
 
@@ -178,27 +178,27 @@ abstract class Field {
 	 */
 	public function render_admin_field_form() {
 		?>
-		<li class="mf_list__item mf_canvas_<?php echo esc_attr( $this->type ); ?> mf_list__item--landed" data-type="<?php echo esc_attr( $this->type ); ?>">
-			<div class="mf_list__inner">
-					<div class="mf__options">
+		<li class="pf_list__item pf_canvas_<?php echo esc_attr( $this->type ); ?> pf_list__item--landed" data-type="<?php echo esc_attr( $this->type ); ?>">
+			<div class="pf_list__inner">
+					<div class="pf__options">
 
-						<?php do_action( 'mf_before_config_buttons', [ $this->type, $this->id ] ); ?>
+						<?php do_action( 'pf_before_config_buttons', [ $this->type, $this->id ] ); ?>
 
-						<button class="mf_btn mf_btn--config" aria-label="<?php esc_attr_e( 'Show field settings window', 'wp-macs-forms' ); ?>">
+						<button class="pf_btn pf_btn--config" aria-label="<?php esc_attr_e( 'Show field settings window', 'proper-forms' ); ?>">
 							<span class="dashicons dashicons-edit" aria-hidden="true"></span>
 						</button>
-						<button class="mf_btn mf_btn--remove" aria-label="<?php esc_attr_e( 'Remove field from form', 'wp-macs-forms' ); ?>">
+						<button class="pf_btn pf_btn--remove" aria-label="<?php esc_attr_e( 'Remove field from form', 'proper-forms' ); ?>">
 							<span class="dashicons dashicons-trash" aria-hidden="true"></span>
 						</button>
 
-						<?php do_action( 'mf_after_config_buttons', [ $this->type, $this->id ] ); ?>
+						<?php do_action( 'pf_after_config_buttons', [ $this->type, $this->id ] ); ?>
 
 					</div>
 				<h3>
 					<span class="dashicons <?php echo esc_attr( $this->icon ); ?>"></span>
-					<span class="mf_list__title"><?php echo esc_html( $this->name ); ?></span>
+					<span class="pf_list__title"><?php echo esc_html( $this->name ); ?></span>
 				</h3>
-					<div class="mf_list__config_panel">
+					<div class="pf_list__config_panel">
 						<?php
 							$this->render_field_settings();
 
@@ -214,7 +214,7 @@ abstract class Field {
 							$this->render_option(
 								[
 									'type'  => 'hidden',
-									'name'  => 'mf_field_id',
+									'name'  => 'pf_field_id',
 									'value' => $this->id,
 								]
 							);
@@ -328,17 +328,17 @@ abstract class Field {
 					esc_attr( $args['name'] ),
 					esc_html( $args['label'] ),
 					wp_kses(
-						str_replace( 'rn', "\n", $args['value'] ),
+						str_replace( "rn", "\n", $args['value'] ),
 						[
 							'br'     => [],
 							'strong' => [],
 							'em'     => [],
 							'b'      => [],
 							'br'     => [],
-							'span'   => [
+							'span' => [
 								'class' => [],
 							],
-							'a'      => [
+							'a'    => [
 								'href'    => [],
 								'_target' => [],
 							],
@@ -346,9 +346,9 @@ abstract class Field {
 					)
 				);
 				break;
-		}
+			}
 		?>
-			<div class="mf-cell-<?php echo esc_attr( $args['col'] ); ?> mf_setting"><?php echo $input; // phpcs:ignore WordPress.Security.EscapeOutput -- Escaped early ?></div>
+			<div class="pf-cell-<?php echo esc_attr( $args['col'] ); ?> pf_setting"><?php echo $input; // phpcs:ignore WordPress.Security.EscapeOutput -- Escaped early ?></div>
 		<?php
 	}
 
@@ -380,7 +380,7 @@ abstract class Field {
 	 * @return string
 	 */
 	public function get_render_required_class() {
-		$required_class = ! empty( $this->is_required ) ? 'mf-required' : '';
+		$required_class = ! empty( $this->is_required ) ? 'pf-required' : '';
 		return $required_class;
 	}
 
@@ -395,7 +395,7 @@ abstract class Field {
 			return false;
 		}
 
-		return '<div class="mf-required--symbol"> * </div>';
+		return '&nbsp;<span class="pf-required--symbol"> * </span>';
 	}
 
 }

@@ -4,12 +4,12 @@
  * Makes objects, implements WP Cache
  */
 
-namespace MACS_Forms;
+namespace Proper_Forms;
 
-use MACS_Forms\Fields\Field_Types as Field_Types;
-use MACS_Forms\Forms\Form as Form;
-use MACS_Forms\Submissions\Submission as Submission;
-use MACS_Forms\Files\File as File;
+use Proper_Forms\Fields\Field_Types as Field_Types;
+use Proper_Forms\Forms\Form as Form;
+use Proper_Forms\Submissions\Submission as Submission;
+use Proper_Forms\Files\File as File;
 
 class Builder {
 
@@ -61,8 +61,8 @@ class Builder {
 			return new Form();
 		}
 
-		$cache_key     = sprintf( 'mf_form_%d', $form_id );
-		$cached_object = wp_cache_get( $cache_key, 'macs_forms' );
+		$cache_key     = sprintf( 'pf_form_%d', $form_id );
+		$cached_object = wp_cache_get( $cache_key, 'proper_forms' );
 
 		if ( $cached_object instanceof Form ) {
 			return $cached_object;
@@ -74,19 +74,23 @@ class Builder {
 	/**
 	 * Create new Submission object or get existing one from cache if ID is defined.
 	 * @NOTE: Cache is set by Submissions/update_form_cache() method, hooked to
-	 *        'save_post_mf_sub' action.
+	 *        'save_post_pf_sub' action.
 	 *
 	 * @param int $sub_id
 	 *
 	 * @return Submission
 	 */
-	public function make_submission( $sub_id = 0 ) {
+	public function make_submission( $sub_id = 0, $ignore_cache = false ) {
 		if ( ! $sub_id || ! absint( $sub_id ) ) {
 			return new Submission();
 		}
 
-		$cache_key     = sprintf( 'mf_sub_%d', $sub_id );
-		$cached_object = wp_cache_get( $cache_key, 'macs_forms' );
+		if ( true === $ignore_cache ) {
+			return new Submission( $sub_id );
+		}
+
+		$cache_key     = sprintf( 'pf_sub_%d', $sub_id );
+		$cached_object = wp_cache_get( $cache_key, 'proper_forms' );
 		if ( $cached_object instanceof Submission ) {
 			return $cached_object;
 		}

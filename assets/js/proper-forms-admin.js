@@ -18,8 +18,8 @@ jQuery(document).ready(function ($) {
         revertDuration: 100,
         stop: function (event, ui) {
 					// modify only elements moved to our builder
-          if (ui.helper.parents('.mf_list--canvas').length) {
-            ui.helper.addClass('mf_list__item--landed').css({ 'width': '', 'height': '' })
+          if (ui.helper.parents('.pf_list--canvas').length) {
+            ui.helper.addClass('pf_list__item--landed').css({ 'width': '', 'height': '' })
             self.bindClicksAfterLanding(ui.helper)
             self.setFieldId(ui.helper)
             self.flagAsUsed(ui.helper)
@@ -28,7 +28,7 @@ jQuery(document).ready(function ($) {
       })
 
 			//bind clicks to modules preloaded from db
-      $('.mf_list__item--landed').each(function () {
+      $('.pf_list__item--landed').each(function () {
         self.bindClicksAfterLanding($(this))
       })
 
@@ -41,7 +41,7 @@ jQuery(document).ready(function ($) {
 		 */
     self.flagAsUsed = function (parent) {
 
-          var config_panel = parent.find( '.mf_list__config_panel' ).first();
+          var config_panel = parent.find( '.pf_list__config_panel' ).first();
 
           if ( ! config_panel ) {
             return;
@@ -49,7 +49,7 @@ jQuery(document).ready(function ($) {
 
           var fieldIdInput = $('<input />', {
             'type': 'hidden',
-            'name': 'mf_field_id',
+            'name': 'pf_field_id',
             'value': parent.data('field-id')
           })
 
@@ -60,9 +60,9 @@ jQuery(document).ready(function ($) {
 		 * Add listeners to component's menu buttons
 		 */
     self.bindClicksAfterLanding = function (parent) {
-      var removeBtn = parent.find('.mf_btn--remove'),
-			    configBtn = parent.find('.mf_btn--config'),
-			    configPanel = parent.find('.mf_list__config_panel')
+      var removeBtn = parent.find('.pf_btn--remove'),
+			    configBtn = parent.find('.pf_btn--config'),
+			    configPanel = parent.find('.pf_list__config_panel')
 
       // Component's delete btn action
       removeBtn.off().on('click', function (e) {
@@ -78,7 +78,7 @@ jQuery(document).ready(function ($) {
       })
 
       // Option tables
-      if ( parent.find('.mf_key_value_table').length ) {
+      if ( parent.find('.pf_key_value_table').length ) {
         var table = new PfOptionTable(parent)
         table.init()
       }
@@ -92,10 +92,10 @@ jQuery(document).ready(function ($) {
       var random = Math.floor(Math.random() * 10000),
           postId = $('#post_ID').val()
 
-          self.newFieldId = '_mf_' + parseInt(postId, 10) + '_' + random
+          self.newFieldId = '_pf_' + parseInt(postId, 10) + '_' + random
 
           // try again if id is in use already in this form
-          $('.mf_list--canvas .mf_list__item').each( function() {
+          $('.pf_list--canvas .pf_list__item').each( function() {
             if ( $(this).data('field-id') && self.newFieldId === $(this).data('field-id').toString() ) {
               self.newFieldId = self.createFieldId()
               return false;
@@ -106,18 +106,17 @@ jQuery(document).ready(function ($) {
 
     self.getFormsOnSubmit = function() {
       $('#post').submit( function( e ) {
-        $( '.mf_list__item--landed .mf_list__config_panel' ).each( function() {
+        $( '.pf_list__item--landed .pf_list__config_panel' ).each( function() {
 
           // get only fields with name attributes
           var inputs = $(this).find( 'input, textarea, select' ).filter( function( index, item ) {
-
 
             return $( item ).attr( 'name' )
           } );
 
           var fieldDataInput = $('<input />', {
             'type': 'hidden',
-            'name': 'mf_fields[]',
+            'name': 'pf_fields[]',
             'value': JSON.stringify( inputs.serializeArray() )
           })
 
@@ -140,13 +139,13 @@ jQuery(document).ready(function ($) {
 
     self.values = []
 
-    self.tableRowTemplate = '<tr><td><input type="text" /></td><td><input type="text" /></td><td><button class="mf_delete_row" aria-label="' + PF.string_delete_row + '"><span class="dashicons dashicons-no"></span></button></td></tr>'
+    self.tableRowTemplate = '<tr><td><input type="text" /></td><td><input type="text" /></td><td><button class="pf_delete_row" aria-label="' + PF.string_delete_row + '"><span class="dashicons dashicons-no"></span></button></td></tr>'
 
     /**
      * Initialize Option Table
      */
     self.init = function() {
-      self.table      = self.parent.find( '.mf_key_value_table tbody' ).first()
+      self.table      = self.parent.find( '.pf_key_value_table tbody' ).first()
       self.tableInput = self.parent.find('input[name=options]').first()
 
       // Add listeners
@@ -168,7 +167,7 @@ jQuery(document).ready(function ($) {
      * Handles a click on new row button
      */
     self.bindRowClicks = function() {
-      var newRowBtn = self.parent.find( '.mf_table_add_row' ).first()
+      var newRowBtn = self.parent.find( '.pf_table_add_row' ).first()
 
       newRowBtn.off().on('click', function(e) {
         e.preventDefault()
@@ -182,7 +181,7 @@ jQuery(document).ready(function ($) {
      * Handles a click on delete button element
      */
     self.bindDeleteRowBtn = function() {
-      self.parent.find( '.mf_delete_row' ).off().on('click', function(e) {
+      self.parent.find( '.pf_delete_row' ).off().on('click', function(e) {
         e.preventDefault()
         $(this).closest( 'tr' ).remove()
 
@@ -204,7 +203,7 @@ jQuery(document).ready(function ($) {
      * @return {string}
      */
     self.getValues = function() {
-      var tableRows = self.parent.find( '.mf_key_value_table tr' ),
+      var tableRows = self.parent.find( '.pf_key_value_table tr' ),
           values    = []
 
       tableRows.each( function() {
@@ -227,6 +226,6 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  // Initialize MACS Forms UI
+  // Initialize Proper Forms UI
   PfController.init()
 })
