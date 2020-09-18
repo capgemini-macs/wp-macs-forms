@@ -487,29 +487,29 @@ jQuery(document).ready(function ($) {
   $('.mf_field input, .mf_field textarea, .mf_field select, .mf_fileupload_callback_id').on('blur change', function () {
     var check = PFValidator.init($(this))
   })
+
+  // TODO add as main controller's method
+  function resizeForms () {
+    $('.mf_form__form select').each(function () {
+      var newWidth = $(this).width()
+      if (newWidth === lastWindowWidth) {
+        return
+      }
+      lastWindowWidth = newWidth
+
+      var $form = $(this).parents('.mf_form__form')
+
+      $(this).select2('destroy')
+      $(this).width($(this).parent().width())
+      $(this).select2({ dropdownParent: $form })
+
+      $('select', $form).attr('aria-hidden', false)
+      $('.select2', $form).attr('aria-hidden', true)
+    })
+    $('.popup__overlay').find('select').each(function () {
+      $(this).select2()
+    })
+  }
+  var lastWindowWidth = $(window).width()
+  $(window).resize(_.debounce(resizeForms, 100))
 })
-
-// TODO add as main controller's method
-function resizeForms () {
-  $('.mf_form__form select').each(function () {
-    var newWidth = $(this).width()
-    if (newWidth === lastWindowWidth) {
-      return
-    }
-    lastWindowWidth = newWidth
-
-    var $form = $(this).parents('.mf_form__form')
-
-    $(this).select2('destroy')
-    $(this).width($(this).parent().width())
-    $(this).select2({ dropdownParent: $form })
-
-    $('select', $form).attr('aria-hidden', false)
-    $('.select2', $form).attr('aria-hidden', true)
-  })
-  $('.popup__overlay').find('select').each(function () {
-    $(this).select2()
-  })
-}
-var lastWindowWidth = $(window).width()
-$(window).resize(_.debounce(resizeForms, 100))
