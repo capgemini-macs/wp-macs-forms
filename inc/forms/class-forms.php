@@ -85,7 +85,7 @@ class Forms {
 
 		wp_localize_script(
 			'wp-macs-forms',
-			'PF',
+			'MF',
 			[
 				'ajaxURL'   => admin_url( '/admin-ajax.php' ),
 				'ajaxNonce' => wp_create_nonce( 'mf_form_submission' ),
@@ -377,7 +377,7 @@ class Forms {
 	/**
 	 * Ninja Forms shortcode callback for backward compatibility.
 	 *
-	 * Requires meta data from PF migration CLI.
+	 * Requires meta data from MF migration CLI.
 	 *
 	 * @return string
 	 */
@@ -425,7 +425,7 @@ class Forms {
 		// Pass custom error messages to the script
 		wp_localize_script(
 			'wp-macs-forms',
-			'PF_ERR',
+			'MF_ERR',
 			$error_msgs
 		);
 

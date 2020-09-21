@@ -91,7 +91,7 @@ class Admin {
 
 		wp_localize_script(
 			'cg-mf-admin-js',
-			'PF',
+			'MF',
 			[
 				'ajaxURL'           => admin_url( 'admin-ajax.php' ),
 				'postId'            => filter_input( INPUT_GET, 'post', FILTER_VALIDATE_INT ),

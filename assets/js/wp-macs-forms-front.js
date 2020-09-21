@@ -31,7 +31,7 @@ jQuery(document).ready(function ($) {
       var fileFields = self.formElement.find('.mf_field--file')
 
       fileFields.each(function () {
-        var upload = new PFFileUpload()
+        var upload = new MFFileUpload()
         upload.init($(this))
       })
     }
@@ -52,7 +52,7 @@ jQuery(document).ready(function ($) {
         var hasErrors = 0
         // Validate all fields again on submit
         $('.mf_field input, .mf_field textarea, .mf_field select, .mf_fileupload_callback_id').each(function () {
-          if (PFValidator.init($(this)) === false) {
+          if (MFValidator.init($(this)) === false) {
             hasErrors = 1
           }
         })
@@ -63,7 +63,7 @@ jQuery(document).ready(function ($) {
 
         var data = {
           action: 'mf_submit_form',
-          nonce_mf_submit: PF.ajaxNonce,
+          nonce_mf_submit: MF.ajaxNonce,
           recaptcha_response: grecaptcha.getResponse(),
           form_data: {}
         }
@@ -93,10 +93,10 @@ jQuery(document).ready(function ($) {
         data.form_data = JSON.stringify(data.form_data)
 
         $.ajax({
-          url: PF.ajaxURL,
+          url: MF.ajaxURL,
           method: 'post',
           action: 'mf_submit_form',
-          nonce_mf_submit: PF.ajaxNonce,
+          nonce_mf_submit: MF.ajaxNonce,
           data: data
         }).done(function (response) {
           if (!response.success) {
@@ -159,7 +159,7 @@ jQuery(document).ready(function ($) {
   /**
    * AJAX FILE UPLOAD FIELDS CONTROLLER
    */
-  function PFFileUpload () {
+  function MFFileUpload () {
     var self = this
 
     // Field wrapper element
@@ -169,7 +169,7 @@ jQuery(document).ready(function ($) {
     self.input = ''
 
     // WP Ajax url with callback action query string
-    self.ajaxURL = PF.ajaxURL + '?action=mf_fileupload'
+    self.ajaxURL = MF.ajaxURL + '?action=mf_fileupload'
 
     // Parent MACS Form Form ID - to retrieve field settings from
     self.formId = ''
@@ -241,7 +241,7 @@ jQuery(document).ready(function ($) {
         processData: false,
         contentType: false,
         beforeSend: function (jqXhr) {
-          self.button.text(PF.strings.uploading)
+          self.button.text(MF.strings.uploading)
         },
         success: function (result, textStatus, jqXHR) {
           if (!result.data || !result.success || !result.data.file_post_id || !result.data.file_data) {
@@ -256,14 +256,14 @@ jQuery(document).ready(function ($) {
     self.fail = function (data) {
       var $error = $('<span>', { class: 'mf_error', text: data })
       $error.appendTo(self.parent)
-      self.button.text(PF.strings.select_file)
+      self.button.text(MF.strings.select_file)
     }
 
     self.reset = function () {
       self.parent.find('.mf_fileupload__uploaded').remove()
       self.wpFileInput.val('')
       self.input.val('')
-      self.button.text(PF.strings.select_file)
+      self.button.text(MF.strings.select_file)
       self.enable()
     }
 
@@ -285,7 +285,7 @@ jQuery(document).ready(function ($) {
     self.success = function (result) {
       self.wpFileInput.val(result.file_post_id)
       self.appendUploaded(result.file_data)
-      self.button.text(PF.strings.file_selected)
+      self.button.text(MF.strings.file_selected)
       self.disable()
     }
 
@@ -293,7 +293,7 @@ jQuery(document).ready(function ($) {
      * Appends HTML with uploaded file name and removal link
      */
     self.appendUploaded = function (fileData) {
-      var removeEl = $('<span>').text(PF.strings.remove_file).addClass('mf_fileupload__remove')
+      var removeEl = $('<span>').text(MF.strings.remove_file).addClass('mf_fileupload__remove')
       var uploadedInfo = $('<p/>').text(fileData.name).addClass('mf_fileupload__uploaded')
       removeEl.appendTo(uploadedInfo)
       uploadedInfo.appendTo(self.parent)
@@ -307,7 +307,7 @@ jQuery(document).ready(function ($) {
   /**
    * PROPER FORMS VALIDATOR
    */
-  var PFValidator = new function () {
+  var MFValidator = new function () {
     var self = this
 
     self.field = ''
@@ -319,7 +319,7 @@ jQuery(document).ready(function ($) {
 
     self.init = function ($fieldEl) {
       // Bail out early if globals from localized scripts are not present
-      if (!PF_ERR || !PF) {
+      if (!MF_ERR || !MF) {
         return
       }
 
@@ -339,7 +339,7 @@ jQuery(document).ready(function ($) {
       // check if required fields are filled before even trying to check values
       if (self.isRequired() && !self.fieldValue) {
         self.hasErrors = 1
-        self.outputError(PF.strings.required_error)
+        self.outputError(MF.strings.required_error)
         return false
       }
 
@@ -351,7 +351,7 @@ jQuery(document).ready(function ($) {
 
           if (!self.fieldValue.match(regex)) {
             self.hasErrors = 1
-            errorMsg = PF.strings.email_error
+            errorMsg = MF.strings.email_error
           }
           break
 
@@ -372,7 +372,7 @@ jQuery(document).ready(function ($) {
 
           if (!self.fieldValue.match(regex)) {
             self.hasErrors = 1
-            errorMsg = PF.strings.date_format_error
+            errorMsg = MF.strings.date_format_error
           }
           break
       }
@@ -420,28 +420,28 @@ jQuery(document).ready(function ($) {
     /**
      * Gets error message, customized if possible. Strings are passed through wp_localize_script in shortcode callback.
      *
-     * 1. Looks for field's custom message if set in form WP admin screen (passed in PF_ERR global),
+     * 1. Looks for field's custom message if set in form WP admin screen (passed in MF_ERR global),
      * 2. First fallback is a string provided as function param
-     * 3. Second fallback: generic localized string in PF global,
+     * 3. Second fallback: generic localized string in MF global,
      * 3. Ultimate fallback: hardcoded english string. Lo siento pero no comprendo, señor.
      */
     self.getErrorMsg = function (fieldId, defaultMsg) {
-      if (!PF_ERR || !PF_ERR[fieldId]) {
+      if (!MF_ERR || !MF_ERR[fieldId]) {
         // Fallback: return msg probivided as param
         if (defaultMsg) {
           return defaultMsg
         }
 
         // Fallback: return hardcoded value if nothing else is present
-        if (!PF || !PF.strings || !PF.strings.default_error) {
+        if (!MF || !MF.strings || !MF.strings.default_error) {
           return 'This field\'s value is invalid!' // Default hardcoded message, displayed only if wp_localize_script() fails
         }
 
         // Return localized default message if present
-        return PF.strings.default_error
+        return MF.strings.default_error
       }
 
-      return PF_ERR[fieldId]
+      return MF_ERR[fieldId]
     }
 
     /**
@@ -485,7 +485,7 @@ jQuery(document).ready(function ($) {
 
   // Init validator when field's value change
   $('.mf_field input, .mf_field textarea, .mf_field select, .mf_fileupload_callback_id').on('blur change', function () {
-    var check = PFValidator.init($(this))
+    var check = MFValidator.init($(this))
   })
 
   // TODO add as main controller's method

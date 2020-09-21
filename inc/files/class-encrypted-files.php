@@ -207,7 +207,7 @@ class Encrypted_Files {
 	 * Retrieves upload field object from form based on form and field ids
 	 *
 	 * @param int    $form_id  form post ID
-	 * @param string $field_id PF field ID
+	 * @param string $field_id MF field ID
 	 *
 	 * @return array
 	 */
