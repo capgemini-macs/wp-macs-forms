@@ -77,11 +77,9 @@ class Forms {
 	 */
 	public function frontend_scripts() {
 
-		wp_enqueue_script( 'lodash', 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.core.min.js' );
-
 		wp_enqueue_style( 'wp-macs-forms', sprintf( '%1$s/wp-macs-forms/assets/css/wp-macs-forms-front.css', plugins_url() ), [], MACS_Forms\VERSION );
 
-		wp_enqueue_script( 'wp-macs-forms', sprintf( '%s/wp-macs-forms/assets/js/wp-macs-forms-front.js', plugins_url() ), [ 'jquery' ], MACS_Forms\VERSION, true );
+		wp_enqueue_script( 'wp-macs-forms', sprintf( '%s/wp-macs-forms/assets/js/wp-macs-forms-front.js', plugins_url() ), [ 'jquery', 'lodash' ], MACS_Forms\VERSION, true );
 
 		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js' );
 
