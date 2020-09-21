@@ -140,7 +140,7 @@ jQuery(document).ready(function ($) {
 
     self.values = []
 
-    self.tableRowTemplate = '<tr><td><input type="text" /></td><td><input type="text" /></td><td><button class="mf_delete_row" aria-label="' + PF.string_delete_row + '"><span class="dashicons dashicons-no"></span></button></td></tr>'
+    self.tableRowTemplate = '<tr><td><input type="text" /></td><td><input type="text" /></td><td><button class="mf_delete_row" aria-label="' + MF.string_delete_row + '"><span class="dashicons dashicons-no"></span></button></td></tr>'
 
     /**
      * Initialize Option Table
