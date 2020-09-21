@@ -510,6 +510,8 @@ jQuery(document).ready(function ($) {
       $(this).select2()
     })
   }
+  
   var lastWindowWidth = $(window).width()
-  $(window).resize(_.debounce(resizeForms, 100))
+  $(window).resize(lodash.debounce(resizeForms, 100))
+
 })
