@@ -77,13 +77,17 @@ class Forms {
 	 */
 	public function frontend_scripts() {
 
-		wp_enqueue_style( 'wp-macs-forms', sprintf( '%s/wp-macs-forms/assets/css/wp-macs-forms-front.css', plugins_url() ), [], MACS_Forms\VERSION );
-		wp_enqueue_script( 'wp-macs-forms', sprintf( '%s/wp-macs-forms/assets/js/wp-macs-forms-front.js', plugins_url() ), [ 'jquery' ], MACS_Forms\VERSION, true );
+		wp_register_script( 'select2', get_template_directory_uri() . '/assets/js/libs/selectWoo.full.js', [ 'jquery' ], '4.0.2', true );
+
+		wp_enqueue_style( 'wp-macs-forms', sprintf( '%1$s/wp-macs-forms/assets/css/wp-macs-forms-front.css', plugins_url() ), [], MACS_Forms\VERSION );
+
+		wp_enqueue_script( 'wp-macs-forms', sprintf( '%s/wp-macs-forms/assets/js/wp-macs-forms-front.js', plugins_url() ), [ 'jquery', 'lodash', 'select2' ], MACS_Forms\VERSION, true );
+
 		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js' );
 
 		wp_localize_script(
 			'wp-macs-forms',
-			'PF',
+			'MF',
 			[
 				'ajaxURL'   => admin_url( '/admin-ajax.php' ),
 				'ajaxNonce' => wp_create_nonce( 'mf_form_submission' ),
@@ -375,7 +379,7 @@ class Forms {
 	/**
 	 * Ninja Forms shortcode callback for backward compatibility.
 	 *
-	 * Requires meta data from PF migration CLI.
+	 * Requires meta data from MF migration CLI.
 	 *
 	 * @return string
 	 */
@@ -423,7 +427,7 @@ class Forms {
 		// Pass custom error messages to the script
 		wp_localize_script(
 			'wp-macs-forms',
-			'PF_ERR',
+			'MF_ERR',
 			$error_msgs
 		);
 

@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-  var PfController = new function () {
+  var MfController = new function () {
     var self = this
 
     self.init = function () {
@@ -79,7 +79,7 @@ jQuery(document).ready(function ($) {
 
       // Option tables
       if ( parent.find('.mf_key_value_table').length ) {
-        var table = new PfOptionTable(parent)
+        var table = new MfOptionTable(parent)
         table.init()
       }
     }
@@ -128,7 +128,7 @@ jQuery(document).ready(function ($) {
     }
   }()
 
-  function PfOptionTable(parent) {
+  function MfOptionTable(parent) {
 
     var self = this
 
@@ -140,7 +140,7 @@ jQuery(document).ready(function ($) {
 
     self.values = []
 
-    self.tableRowTemplate = '<tr><td><input type="text" /></td><td><input type="text" /></td><td><button class="mf_delete_row" aria-label="' + PF.string_delete_row + '"><span class="dashicons dashicons-no"></span></button></td></tr>'
+    self.tableRowTemplate = '<tr><td><input type="text" /></td><td><input type="text" /></td><td><button class="mf_delete_row" aria-label="' + MF.string_delete_row + '"><span class="dashicons dashicons-no"></span></button></td></tr>'
 
     /**
      * Initialize Option Table
@@ -228,5 +228,5 @@ jQuery(document).ready(function ($) {
   }
 
   // Initialize MACS Forms UI
-  PfController.init()
+  MfController.init()
 })

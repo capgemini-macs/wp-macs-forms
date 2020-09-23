@@ -197,7 +197,7 @@ class Submission {
 
 		// [form_id] field is required
 		if ( empty( $input_data['form_id'] ) || ! absint( $input_data['form_id'] ) ) {
-			$this->validation_errors[] = new \WP_Error( 'missing_form_id', __( 'Submission data array must contain proper form_id', 'macs_forms' ) );
+			$this->validation_errors[] = new \WP_Error( 'missing_form_id', __( 'Submission data array must contain macs form_id', 'macs_forms' ) );
 		}
 
 		// Set related form ID
