@@ -2,3 +2,7 @@
 .mf_form__errors {
   display: none;
 }
+
+.select2-hidden-accessible {
+  display: none !important;
+}
