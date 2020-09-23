@@ -22,6 +22,6 @@ A copy of the license is included in the root of the plugin’s directory. The f
 
 # Credits
 
-MACS Forms is built and maintained by Capgemini MACS PLteam.
+MACS Forms is built and maintained by Capgemini MACS PL team.
 
 # Documentation, FAQs, and More
