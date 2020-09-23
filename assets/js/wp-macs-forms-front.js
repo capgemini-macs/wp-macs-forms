@@ -1,8 +1,8 @@
 jQuery(document).ready(function ($) {
   /**
-   * MAIN PROPER FORMS CONTROLLER
+   * MAIN MACS FORMS CONTROLLER
    */
-  var ProperForms = new function () {
+  var MacsForms = new function () {
     var self = this
 
     self.formElement = ''
@@ -305,7 +305,7 @@ jQuery(document).ready(function ($) {
   }
 
   /**
-   * PROPER FORMS VALIDATOR
+   * MACS FORMS VALIDATOR
    */
   var MFValidator = new function () {
     var self = this
@@ -480,7 +480,7 @@ jQuery(document).ready(function ($) {
 
   // Init main controller on every form on the page
   $('.mf_form__form').each(function () {
-    ProperForms.init($(this))
+    MacsForms.init($(this))
   })
 
   // Init validator when field's value change
