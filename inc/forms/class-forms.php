@@ -77,7 +77,7 @@ class Forms {
 	 */
 	public function frontend_scripts() {
 
-		wp_register_script( 'select2', get_template_directory_uri() . '/assets/js/libs/selectWoo.full.js', [ 'jquery' ], '4.0.2', true );
+		wp_register_script( 'select2', sprintf( '%1$s/wp-macs-forms/assets/js/libs/selectWoo.full.js', plugins_url() ), [ 'jquery' ], '4.0.2', true );
 
 		wp_enqueue_style( 'wp-macs-forms', sprintf( '%1$s/wp-macs-forms/assets/css/wp-macs-forms-front.css', plugins_url() ), [], MACS_Forms\VERSION );
 
