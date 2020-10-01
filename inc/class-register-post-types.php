@@ -28,7 +28,7 @@ class Register_Post_Types {
 			'show_ui'            => true,
 			'has_archive'        => true,
 			'show_in_menu'       => true,
-			'show_in_rest'       => false,
+			'show_in_rest'       => true,
 			'hierarchical'       => false,
 			'menu_icon'          => 'dashicons-list-view',
 			'rewrite'            => [ 'slug' => 'mf_form' ],
