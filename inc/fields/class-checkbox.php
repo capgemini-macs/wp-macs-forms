@@ -31,7 +31,7 @@ class Checkbox extends Multi_Field {
 	public function render_field() {
 		?>
 			<div class="mf_field mf_field--checkboxes <?php echo esc_attr( $this->get_render_required_class() ); ?>" data-validate="checkboxes">
-				<legend for="<?php echo esc_attr( $this->id ); ?>" /><?php echo esc_html( $this->label ); ?></legend>
+				<label for="<?php echo esc_attr( $this->id ); ?>"><?php echo esc_html( $this->label ); ?></label>
 				<?php echo wp_kses_post( $this->get_render_required_symbol() ); ?>
 				<ul>
 				<?php
